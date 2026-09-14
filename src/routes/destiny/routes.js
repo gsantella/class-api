@@ -32,15 +32,15 @@ router.get('/songs', (req, res) => {
   res.json(songs);
 });
 
-router.get('/post', (req, res) => {
-  res.send('This will be a POST.');
+router.post('/post', (req, res) => {
+  res.send('This will be a POST');
 });
 
-router.get('/put', (req, res) => {
+router.put('/put', (req, res) => {
   res.send('This will be a PUT.');
 });
 
-router.get('/delete', (req, res) => {
+router.delete('/delete', (req, res) => {
   res.send('This will be a DELETE.');
 });
 
