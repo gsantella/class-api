@@ -1,0 +1,15 @@
+[
+    {
+        "id": "1",
+        "name": "card name"
+    },
+    {
+        "id": "244",
+        "name": "Bumbleflower's Sharepot",
+        "cost": "{2}",
+        "type": "Artifact",
+        "Rules": "When this artifact enters, create a Food token. (It’s an artifact with “{2}, {T}, Sacrifice this token: You gain 3 life.”)\n{5}, {T}, Sacrifice this artifact: Destroy target nonland permanent. Activate only as a sorcery.",
+        "Flavor": "I may have overestimated the portions.",
+        "Illustrator": "J.P. Targete"
+    }
+]
