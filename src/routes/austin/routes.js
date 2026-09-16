@@ -48,6 +48,16 @@ router.get("/", (req, res) => {
   res.send("Welcome to NFL Facts API - Austin Emig!");
 });
 
+router.get("/hotsauce", (req, res) => {
+  const typesOfHotSauce = req.query.type;
+  
+  if (!typesOfHotSauce) {
+    return res.status(400).send("Please provide a type of hot sauce in the query parameter.");
+  } else {
+    res.send(`You must like ${typesOfHotSauce} hot sauce!`);
+  }
+});
+
 router.get("/teams", (req, res) => {
   res.json(teams);
 });
