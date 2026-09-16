@@ -1,0 +1,17 @@
+[
+    {
+        "id": "1",
+        "name": "card name"
+    },
+    {
+        "id": "3",
+        "name": "Ms. Bumbleflower",
+        "cost": "{1}{G}{W}{B}",
+        "type": "Legendary Creature — Rabbit Citizen",
+        "Rules": "Vigilance\nWhenever you cast a spell, target opponent draws a card. Put a +1/+1 counter on target creature. It gains flying until end of turn. If this is the second time this ability has resolved this turn, you draw two cards.",
+        "Flavor": "",
+        "Power": 1,
+        "Toughness": 5,
+        "Illustrator": "Marta Nael"
+    }
+]
