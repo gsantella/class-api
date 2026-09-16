@@ -5,6 +5,15 @@ const router = Router();
 
 router.get("/", (req, res) => res.send("Pokemon"));
 
+router.get("/HS", (req, res) => {
+    const typeofHS = req.query.type;
+    if(typeofHS == null || typeofHS =="")
+    {
+      res.send(`You must not like hot sauce`);
+    }
+    res.send(`You must Like ${typeofHS} hot sauce`);
+});
+
 router.get("/pokemon/:id", (req, res) => {
     const { id } = req.params;
     const foundPokemon = pokemon.find((p) => p.id === id);
