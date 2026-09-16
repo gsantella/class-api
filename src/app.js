@@ -18,6 +18,6 @@ app.use('/api/destiny', destinyRoutes);
 app.use('/api/elijah', elijahRoutes);
 app.use('/api/guido', guidoRoutes);
 
-app.use("/deandre", express.static("./src/static/deandre"))
+
  
 export default app;
