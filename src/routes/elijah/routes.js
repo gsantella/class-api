@@ -39,6 +39,10 @@ router.get("/members", (req, res) => {
     res.send("The band's main members were Jesse Lacey, Vincent Accardi, Garrett Tierney, and Brian Lane.")
 });
 
+router.get("/refresh", (req, res) => {
+  res.send("I didn't restart the server.")
+})
+
 router.get("/hotsauce", (req, res) => { 
     const typeOfHotSauce = req.query.type;
     if (typeOfHotSauce)
