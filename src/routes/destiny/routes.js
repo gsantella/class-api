@@ -32,16 +32,6 @@ router.get('/songs', (req, res) => {
   res.json(songs);
 });
 
-router.get('/hotsauce', (req, res) => {
-  const type = req.query.type;
-  if (type) {
-    res.send(`You must like ${type} hot sauce!`)
-  }
-  else {
-    res.send("Query string please!")
-  }
-});
-
 router.post('/post', (req, res) => {
   res.send('This will be a POST');
 });
