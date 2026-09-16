@@ -1,1 +1,15 @@
 <h1>Guido lives here!</h1>
+
+<button id="loadBtn">Click me</button>
+<div id="content">click the button to load it from the API</div>
+
+<script>
+    document.getElementById('loadBtn').addEventListener('click', () => {
+        fetch('/api/guido/')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('content').textContent = text;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
