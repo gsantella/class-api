@@ -40,4 +40,9 @@ router.delete('/delete', (req, res) => {
   res.send('I will be a DELETE.');
 });
 
+router.get("/hotsauce", (req, res) => {
+  const typeOfHotSauce = req.query.type 
+  res.send(`You must like ${typeOfHotSauce} hot sauce`)
+});
+
 export default router;
