@@ -17,5 +17,12 @@ app.use('/api/deandre', deandreRoutes);
 app.use('/api/destiny', destinyRoutes);
 app.use('/api/elijah', elijahRoutes);
 app.use('/api/guido', guidoRoutes);
+
+app.use("/austin", express.static("./src/static/austin"));
+app.use("/cameron", express.static("./src/static/cameron"));
+app.use("/deandre", express.static("./src/static/deandre"));
+app.use("/destiny", express.static("./src/static/destiny"));
+app.use("/elijah", express.static("./src/static/elijah"));
+app.use("/guido", express.static("./src/static/guido"));
  
 export default app;
