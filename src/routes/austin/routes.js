@@ -48,6 +48,10 @@ router.get("/", (req, res) => {
   res.send("Welcome to NFL Facts API - Austin Emig!");
 });
 
+router.get("/refresh", (req, res) => {
+  res.send("I didn't restart the server");
+});
+
 router.get("/hotsauce", (req, res) => {
   const typesOfHotSauce = req.query.type;
   if (!typesOfHotSauce) {
