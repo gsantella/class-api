@@ -50,7 +50,6 @@ router.get("/", (req, res) => {
 
 router.get("/hotsauce", (req, res) => {
   const typesOfHotSauce = req.query.type;
-  
   if (!typesOfHotSauce) {
     return res.status(400).send("Please provide a type of hot sauce in the query parameter.");
   } else {
