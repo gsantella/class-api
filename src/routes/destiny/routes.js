@@ -42,6 +42,10 @@ router.get('/hotsauce', (req, res) => {
   }
 });
 
+router.get('/refresh', (req, res) => {
+  res.send("Hot reload check! Zoo weeee mama!")
+});
+
 router.post('/post', (req, res) => {
   res.send('This will be a POST');
 });
