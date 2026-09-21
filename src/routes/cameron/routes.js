@@ -6,6 +6,13 @@ router.get("/", (req, res) => {
     res.send("You've reached the Cameron Lynch API, how may I help you?")
 });
 
+//colors!
+const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
+
+router.get("/color", (req, res) => {
+    res.send(colors[Math.floor(Math.random() * colors.length)]);
+});
+
 
 // figure out how to do nested info like latitude and longitude in iss_position
 // or, specifically, a nested url GET such that:
