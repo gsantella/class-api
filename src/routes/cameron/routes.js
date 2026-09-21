@@ -3,7 +3,7 @@ import { Router } from 'express';
 const router = Router();
 
 router.get("/", (req, res) => {
-    res.send("Cameron Lynch.")
+    res.send("You've reached the Cameron Lynch API, how may I help you?")
 });
 
 
