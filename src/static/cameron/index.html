@@ -1,1 +1,26 @@
-<h1>Hello World</h1>
+<h1>Cameron Lives Here</h1>
+
+<button id="loadBtn">Click me</button>
+<div id="content">click the button to load it from the API</div>
+
+<button id="colorBtn">Colors!</button>
+
+<script>
+    document.getElementById('loadBtn').addEventListener('click', () => {
+        fetch('/api/cameron/')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('content').textContent = text;
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.getElementById('colorBtn').addEventListener('click', () => {
+        fetch('/api/cameron/color')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('colorBtn').style.backgroundColor = text;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
