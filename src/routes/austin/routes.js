@@ -44,6 +44,8 @@ const teams = {
     ]
   };
 
+
+
 router.get("/", (req, res) => {
   res.send("Welcome to NFL Facts API - Austin Emig!");
 });
@@ -103,9 +105,10 @@ router.get("/teamFacts/:teamName", (req, res) => {
   res.json({ teamName: teamName, facts: teamFacts });
 });
 
-router.post("/team/:teamName", (req, res) => {
-  const teamName = req.params.teamName;
-  const { city, state, stadium, conference, division } = req.body;
+router.post("/team", (req, res) => {
+  const { teamName, city, state, stadium, conference, division } = req.body;
+
+  console.log("Received team data:", req.body);
 
   if (!city || !state || !stadium || !conference || !division) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -121,6 +124,8 @@ router.post("/team/:teamName", (req, res) => {
 router.put("/team/:teamName", (req, res) => {
   const teamName = req.params.teamName;
   const { city, state, stadium, conference, division } = req.body;
+
+  
 
   if( !teams[teamName]) {
     return res.status(404).json({ error: "Team not found" });
@@ -143,4 +148,38 @@ router.delete("/team/:teamName", (req, res) => {
   delete teams[teamName];
   res.json({ message: "Team deleted successfully" });
 });
+
+let favoriteTeam = "Steelers";
+
+router.get("/favoriteTeam", (req, res) => {
+  res.json({ favoriteTeam });
+});
+
+router.post("/favoriteTeam", (req, res) => {
+  const { teamName } = req.body;
+
+  if (!teamName) {
+    return res.status(400).json({ error: "Missing teamName in request body" });
+  }
+
+  favoriteTeam = teamName;
+  res.json({ message: "Favorite team updated successfully", favoriteTeam });
+});
+
+router.put("/favoriteTeam", (req, res) => {
+  const { teamName } = req.body;
+
+  if (!teamName) {
+    return res.status(400).json({ error: "Missing teamName in request body" });
+  }
+
+  favoriteTeam = teamName;
+  res.json({ message: "Favorite team updated successfully", favoriteTeam });
+});
+
+router.delete("/favoriteTeam", (req, res) => {
+  favoriteTeam = "";
+  res.json({ message: "Favorite team deleted successfully" });
+});
+
 export default router;
