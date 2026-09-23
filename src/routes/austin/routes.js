@@ -52,6 +52,20 @@ router.get("/refresh", (req, res) => {
   res.send("I didn't restart the server");
 });
 
+router.get("/randomColor", (req, res) => {
+  const colors = ["red", "blue", "green", "yellow", "purple", "orange"
+    , "pink", "brown", "black", "white", "gray", "cyan", "magenta", "lime", "teal", "indigo", "violet", "gold", "silver", "bronze"
+    , "maroon", "navy", "olive", "peach", "salmon", "turquoise", "lavender", "beige", "coral", "mint", "plum", "tan", "chocolate"
+    , "crimson", "fuchsia", "khaki", "mustard", "saffron", "scarlet", "amber", "apricot", "cerulean", "cobalt", "emerald"
+    , "jade", "sapphire", "topaz", "ultramarine", "vermilion", "viridian", "wisteria", "zinnia"
+    , "aquamarine", "blush", "carmine", "champagne", "citrine", "ebony", "flax", "heliotrope", "ivory", "jade green"
+    , "lavender blush", "lemon", "lilac", "magenta haze", "mauve", "ochre", "pearl", "periwinkle", "rose", "ruby"
+    , "sangria", "sepia", "tangerine", "taupe", "thistle", "tulip", "umber", "vermilion red"
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  res.send(`${randomColor}`);
+});
+
 router.get("/hotsauce", (req, res) => {
   const typesOfHotSauce = req.query.type;
   if (!typesOfHotSauce) {

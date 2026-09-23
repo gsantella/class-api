@@ -5,7 +5,7 @@
 
 <script>
     document.getElementById('loadBtn').addEventListener('click', () => {
-        fetch('/api/austin/')
+        fetch('/api/austin/randomColor/')
             .then(res => res.text())
             .then(text => {
                 document.getElementById('content').textContent = text;
