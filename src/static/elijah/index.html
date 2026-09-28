@@ -5,10 +5,11 @@
 
 <script>
     document.getElementById('loadBtn').addEventListener('click', () => {
-        fetch('/api/elijah/')
+        fetch('/api/elijah/randomColor')
             .then(res => res.text())
-            .then(text => {
-                document.getElementById('content').textContent = text;
+            .then(color => {                
+                document.getElementById('content').textContent = `Random Color: ${color}`;        
+                document.getElementById('content').style.color = color;      
             })
             .catch(err => console.error(err));
     });

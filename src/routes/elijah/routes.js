@@ -51,4 +51,9 @@ router.get("/hotsauce", (req, res) => {
         res.send("Query String Please")
 });
 
+router.get("/randomColor", (req, res) => {
+    const randomColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
+    res.send(randomColor);
+});
+
 export default router;
