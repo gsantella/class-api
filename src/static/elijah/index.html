@@ -1,15 +1,77 @@
-<h1>i'm elijah</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Elijah's API</title>
+</head>
+<body>
+    <h1>Elijah's API</h1>
 
-<button id="loadBtn">Click me</button>
-<div id="content">click the button to load it from the API</div>
+    <h2>Favorite Song (Global)</h2>
+    <div>
+        <h3>Current Favorite Song:</h3>
+        <p id="songDisplay">N/A</p>
+    </div>
 
-<script>
-    document.getElementById('loadBtn').addEventListener('click', () => {
-        fetch('/api/elijah/')
+    <br>
+
+    <div>
+        <button id="getSongBtn">Get Current Favorite Song (GET)</button>
+    </div>
+
+    <br>
+
+    <div>
+        <input type="text" id="newSongInput" placeholder="Enter song title">
+        <button id="updateSongBtn">Update Favorite Song (PATCH)</button>
+    </div>
+
+    <br>
+
+    <div>
+        <button id="deleteSongBtn">Clear Favorite Song (DELETE)</button>
+    </div>
+
+    <script>
+        const songDisplay = document.getElementById('songDisplay');
+
+        function fetchFavoriteSong() {
+            fetch('/api/elijah/favoriteSong')
+                .then(res => res.text())
+                .then(text => {
+                    songDisplay.textContent = text === "" ? "N/A" : text;
+                })
+                .catch(err => console.error(err));
+        }
+
+        document.getElementById('getSongBtn').addEventListener('click', fetchFavoriteSong);
+
+        document.getElementById('updateSongBtn').addEventListener('click', () => {
+            const inputVal = document.getElementById('newSongInput').value;
+            fetch('/api/elijah/favoriteSong', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ song: inputVal })
+            })
             .then(res => res.text())
-            .then(text => {
-                document.getElementById('content').textContent = text;
+            .then(message => {
+                alert(message);
+                document.getElementById('newSongInput').value = '';            
             })
             .catch(err => console.error(err));
-    });
-</script>
+        });
+
+        document.getElementById('deleteSongBtn').addEventListener('click', () => {
+            fetch('/api/elijah/favoriteSong', {
+                method: 'DELETE'
+            })
+            .then(res => res.text())
+            .then(message => {
+                alert(message);            })
+            .catch(err => console.error(err));
+        });
+    </script>
+</body>
+</html>
