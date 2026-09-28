@@ -1,5 +1,7 @@
 import { Router } from 'express';
 
+let favoriteSong = "";
+
 const router = Router();
 
 router.get("/", (req, res) => { 
@@ -51,9 +53,23 @@ router.get("/hotsauce", (req, res) => {
         res.send("Query String Please")
 });
 
-router.get("/randomColor", (req, res) => {
-    const randomColor = 'rgb(' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ',' + Math.floor(Math.random() * 256) + ')';
-    res.send(randomColor);
+router.get("/favoriteSong", (req, res) => {
+    res.send(favoriteSong);
+});
+
+router.patch("/favoriteSong", (req, res) => {
+    if (req.body && req.body.song !== undefined) {
+        favoriteSong = req.body.song;
+        res.send(`Updated favorite song to: "${favoriteSong}"`);
+    } else {
+        res.status(400).send("Please provide a 'song' property in JSON body.");
+    }
+});
+
+router.delete("/favoriteSong", (req, res) => {
+    favoriteSong = "";
+    res.send("Favorite song has been cleared.");
+\
 });
 
 export default router;
