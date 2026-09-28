@@ -1,71 +1,95 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Brand New API</title>
-</head>
-<body>
+    <head>
+        <meta charset="UTF-8">
+        <title>Brand New API</title>
+    </head>
+    <body>
 
-    <h1>Brand New Music API</h1>
+        <h1>Brand New Music API</h1>
 
-    <button id="loadBtn">View All Albums</button>
-    <pre id="content" style="background: #f4f4f4; padding: 10px; max-width: 800px; max-height: 400px; overflow-y: auto; overflow-x: auto;">Click the button to load all albums from the API</pre>
+        <button id="loadBtn">View All Albums</button>
+        <pre id="content"
+            style="background: #f4f4f4; padding: 10px; max-width: 800px; max-height: 400px; overflow-y: auto; overflow-x: auto;">Click the button to load all albums from the API</pre>
 
-    <div style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
-        <form id="viewAlbum" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>View Single Album</h3>
-            <input type="text" id="viewAlbumName" placeholder="Enter Album Name" required>
-            <button type="submit">View Album</button>
-        </form>
+        <div
+            style="display: flex; gap: 30px; align-items: flex-start; flex-wrap: wrap;">
+            <form id="viewAlbum"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>View Single Album</h3>
+                <input type="text" id="viewAlbumName"
+                    placeholder="Enter Album Name" required>
+                <button type="submit">View Album</button>
+            </form>
 
-        <form id="addAlbum" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Add Album</h3>
-            <input type="text" id="addAlbumName" placeholder="Album Name" required>
-            <input type="text" id="addReleaseDate" placeholder="Release Date" required>
-            <button type="submit">Post Album</button>
-        </form>
+            <form id="addAlbum"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Add Album</h3>
+                <input type="text" id="addAlbumName" placeholder="Album Name"
+                    required>
+                <input type="text" id="addReleaseDate"
+                    placeholder="Release Date" required>
+                <button type="submit">Post Album</button>
+            </form>
 
-        <form id="updateAlbum" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Update Release Date</h3>
-            <input type="text" id="updateAlbumName" placeholder="Target Album Name" required>
-            <input type="text" id="updateReleaseDate" placeholder="New Release Date" required>
-            <button type="submit">Update Album</button>
-        </form>
+            <form id="updateAlbum"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Update Release Date</h3>
+                <input type="text" id="updateAlbumName"
+                    placeholder="Target Album Name" required>
+                <input type="text" id="updateReleaseDate"
+                    placeholder="New Release Date" required>
+                <button type="submit">Update Album</button>
+            </form>
 
-        <form id="renameAlbum" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Rename Album</h3>
-            <input type="text" id="renameOldAlbum" placeholder="Current Album Name" required>
-            <input type="text" id="renameNewAlbum" placeholder="New Album Name" required>
-            <button type="submit">Rename</button>
-        </form>
+            <form id="renameAlbum"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Rename Album</h3>
+                <input type="text" id="renameOldAlbum"
+                    placeholder="Current Album Name" required>
+                <input type="text" id="renameNewAlbum"
+                    placeholder="New Album Name" required>
+                <button type="submit">Rename</button>
+            </form>
 
-        <form id="deleteAlbum" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Delete Album</h3>
-            <input type="text" id="deleteAlbumName" placeholder="Target Album Name" required>
-            <button type="submit">Delete Album</button>
-        </form>
+            <form id="deleteAlbum"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Delete Album</h3>
+                <input type="text" id="deleteAlbumName"
+                    placeholder="Target Album Name" required>
+                <button type="submit">Delete Album</button>
+            </form>
 
-        <form id="addSong" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Add Song</h3>
-            <input type="text" id="targetAlbumForSong" placeholder="Target Album Name" required>
-            <input type="text" id="songName" placeholder="Song Name" required>
-            <input type="text" id="songLength" placeholder="Length (e.g. 3:45)" required>
-            <button type="submit">Add Song</button>
-        </form>
+            <form id="addSong"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Add Song</h3>
+                <input type="text" id="targetAlbumForSong"
+                    placeholder="Target Album Name" required>
+                <input type="text" id="songName" placeholder="Song Name"
+                    required>
+                <input type="text" id="songLength"
+                    placeholder="Length (e.g. 3:45)" required>
+                <button type="submit">Add Song</button>
+            </form>
 
-        <form id="updateSong" style="display: flex; flex-direction: column; max-width: fit-content;">
-            <h3>Update Song</h3>
-            <input type="text" id="updateSongAlbum" placeholder="Target Album Name" required>
-            <input type="text" id="currentSongName" placeholder="Current Song Name" required>
-            <input type="text" id="newSongName" placeholder="New Song Name (Optional)">
-            <input type="text" id="newSongLength" placeholder="New Length (Optional)">
-            <button type="submit">Update Song</button>
-        </form>
-    </div>
+            <form id="updateSong"
+                style="display: flex; flex-direction: column; max-width: fit-content;">
+                <h3>Update Song</h3>
+                <input type="text" id="updateSongAlbum"
+                    placeholder="Target Album Name" required>
+                <input type="text" id="currentSongName"
+                    placeholder="Current Song Name" required>
+                <input type="text" id="newSongName"
+                    placeholder="New Song Name (Optional)">
+                <input type="text" id="newSongLength"
+                    placeholder="New Length (Optional)">
+                <button type="submit">Update Song</button>
+            </form>
+        </div>
 
-    <p id="message" style="font-weight: bold; color: blue;"></p>
+        <p id="message" style="font-weight: bold; color: blue;"></p>
 
-    <script>
+        <script>
         const message = document.getElementById("message");
         const content = document.getElementById("content");
 
@@ -274,5 +298,5 @@
             }
         });
     </script>
-</body>
+    </body>
 </html>

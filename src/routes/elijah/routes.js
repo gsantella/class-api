@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+let favoriteSong = "";
+
 const router = Router();
 
 const albums = {
@@ -267,6 +269,5 @@ router.put("/albums/:albumName/songs/:trackTitle", (req, res) => {
         }
     }
 });
-
 
 export default router;
