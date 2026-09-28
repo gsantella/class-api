@@ -69,6 +69,7 @@ router.patch("/favoriteSong", (req, res) => {
 router.delete("/favoriteSong", (req, res) => {
     favoriteSong = "";
     res.send("Favorite song has been cleared.");
+\
 });
 
 export default router;
