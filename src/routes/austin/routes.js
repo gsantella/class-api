@@ -44,12 +44,28 @@ const teams = {
     ]
   };
 
+
+
 router.get("/", (req, res) => {
   res.send("Welcome to NFL Facts API - Austin Emig!");
 });
 
 router.get("/refresh", (req, res) => {
   res.send("I didn't restart the server");
+});
+
+router.get("/randomColor", (req, res) => {
+  const colors = ["red", "blue", "green", "yellow", "purple", "orange"
+    , "pink", "brown", "black", "white", "gray", "cyan", "magenta", "lime", "teal", "indigo", "violet", "gold", "silver", "bronze"
+    , "maroon", "navy", "olive", "peach", "salmon", "turquoise", "lavender", "beige", "coral", "mint", "plum", "tan", "chocolate"
+    , "crimson", "fuchsia", "khaki", "mustard", "saffron", "scarlet", "amber", "apricot", "cerulean", "cobalt", "emerald"
+    , "jade", "sapphire", "topaz", "ultramarine", "vermilion", "viridian", "wisteria", "zinnia"
+    , "aquamarine", "blush", "carmine", "champagne", "citrine", "ebony", "flax", "heliotrope", "ivory", "jade green"
+    , "lavender blush", "lemon", "lilac", "magenta haze", "mauve", "ochre", "pearl", "periwinkle", "rose", "ruby"
+    , "sangria", "sepia", "tangerine", "taupe", "thistle", "tulip", "umber", "vermilion red"
+  ];
+  const randomColor = colors[Math.floor(Math.random() * colors.length)];
+  res.send(`${randomColor}`);
 });
 
 router.get("/hotsauce", (req, res) => {
@@ -89,9 +105,10 @@ router.get("/teamFacts/:teamName", (req, res) => {
   res.json({ teamName: teamName, facts: teamFacts });
 });
 
-router.post("/team/:teamName", (req, res) => {
-  const teamName = req.params.teamName;
-  const { city, state, stadium, conference, division } = req.body;
+router.post("/team", (req, res) => {
+  const { teamName, city, state, stadium, conference, division } = req.body;
+
+  console.log("Received team data:", req.body);
 
   if (!city || !state || !stadium || !conference || !division) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -107,6 +124,8 @@ router.post("/team/:teamName", (req, res) => {
 router.put("/team/:teamName", (req, res) => {
   const teamName = req.params.teamName;
   const { city, state, stadium, conference, division } = req.body;
+
+  
 
   if( !teams[teamName]) {
     return res.status(404).json({ error: "Team not found" });
@@ -129,4 +148,38 @@ router.delete("/team/:teamName", (req, res) => {
   delete teams[teamName];
   res.json({ message: "Team deleted successfully" });
 });
+
+let favoriteTeam = "Steelers";
+
+router.get("/favoriteTeam", (req, res) => {
+  res.json({ favoriteTeam });
+});
+
+router.post("/favoriteTeam", (req, res) => {
+  const { teamName } = req.body;
+
+  if (!teamName) {
+    return res.status(400).json({ error: "Missing teamName in request body" });
+  }
+
+  favoriteTeam = teamName;
+  res.json({ message: "Favorite team updated successfully", favoriteTeam });
+});
+
+router.put("/favoriteTeam", (req, res) => {
+  const { teamName } = req.body;
+
+  if (!teamName) {
+    return res.status(400).json({ error: "Missing teamName in request body" });
+  }
+
+  favoriteTeam = teamName;
+  res.json({ message: "Favorite team updated successfully", favoriteTeam });
+});
+
+router.delete("/favoriteTeam", (req, res) => {
+  favoriteTeam = "";
+  res.json({ message: "Favorite team deleted successfully" });
+});
+
 export default router;

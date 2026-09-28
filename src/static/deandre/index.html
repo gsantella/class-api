@@ -1,1 +1,298 @@
-<h1>DeAndre lives here</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>DeAndre</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 40px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        .search-section,
+        .team-section {
+            margin-top: 20px;
+        }
+
+        input {
+            padding: 8px;
+            margin-left: 5px;
+        }
+
+        button {
+            padding: 8px 12px;
+            margin: 5px 2px;
+            cursor: pointer;
+        }
+
+        #box {
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            min-width: 300px;
+            background-color: #fafafa;
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 0.85rem;
+            color: #666;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main>
+        <h1>DeAndre lives here</h1>
+
+        <section class="search-section">
+            <h2>Pokémon Search</h2>
+
+            <input
+                type="text"
+                id="pokeInput"
+                placeholder="Enter Pokemon ID or name (1-493)"
+            >
+
+            <button id="PokeSearch">
+                Search
+            </button>
+
+            <button id="btnRandomPoke">
+                Get Random
+            </button>
+        </section>
+
+        <section class="team-section">
+            <h2>Team Management</h2>
+
+            <button id="btnCreateTeam">
+                POST (Create Team)
+            </button>
+
+            <button id="btnGetTeam">
+                GET (View Team)
+            </button>
+
+            <button id="btnUpdateTeam">
+                PUT (Add Member)
+            </button>
+
+            <button id="btnDeleteTeam">
+                DELETE (Remove Member)
+            </button>
+
+            <button id="btnColor">
+                Get a random color
+            </button>
+        </section>
+
+        <section>
+            <div id="box"></div>
+        </section>
+
+        <footer>
+            <p>
+                Pokémon and related intellectual property are owned by
+                their respective copyright and trademark holders.
+                This project is an independent educational project.
+            </p>
+        </footer>
+    </main>
+
+    <script>
+        const btnRandom = document.getElementById('btnRandomPoke');
+        const btnCreate = document.getElementById('btnCreateTeam');
+        const btnGet = document.getElementById('btnGetTeam');
+        const btnUpdate = document.getElementById('btnUpdateTeam');
+        const btnDelete = document.getElementById('btnDeleteTeam');
+        const box = document.getElementById('box');
+        const pokeInput = document.getElementById('pokeInput');
+        const btnSearch = document.getElementById('PokeSearch');
+        const btnColor = document.getElementById('btnColor');
+
+        let currentPokemon = null;
+        const userId = "deandre";
+        
+       btnColor.addEventListener('click', () => {
+    const colors = ["red", "blue", "green", "yellow", "purple"];
+    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+
+    box.innerHTML = `
+        <p style="color: ${randomColor};">
+            This is a random color: ${randomColor}
+        </p>
+    `;
+});
+
+
+  btnSearch.addEventListener('click', () => {
+    const searchValue = pokeInput.value.trim();
+
+    console.log("Search button clicked!");
+    console.log("Searching for:", searchValue);
+
+    if (!searchValue) {
+        box.innerHTML = `
+            <p style="color: orange;">
+                Please enter a Pokemon ID or name.
+            </p>
+        `;
+        return;
+    }
+
+    fetch(`/api/deandre/pokemon/${encodeURIComponent(searchValue)}`)
+        .then(res => {
+            console.log("Response status:", res.status);
+
+            if (!res.ok) {
+                throw new Error("Pokemon not found");
+            }
+
+            return res.json();
+        })
+        .then(data => {
+            console.log("Pokemon found:", data);
+
+            currentPokemon = data;
+
+            box.innerHTML = `
+                <p>
+                    <strong>Selected Pokemon:</strong>
+                    ID #${data.id} - ${data.name}
+                </p>
+            `;
+        })
+        .catch(error => {
+            console.error("Search error:", error);
+
+            box.innerHTML = `
+                <p style="color: red;">
+                    Could not find that Pokemon.
+                </p>
+            `;
+        });
+});
+
+        btnRandom.addEventListener('click', () => {
+            const randomNum = Math.floor(Math.random() * 493) + 1;
+
+            fetch(`/api/deandre/pokemon/${randomNum}`)
+                .then(res => {
+                    if (!res.ok) throw new Error();
+                    return res.json();
+                })
+                .then(data => {
+                    currentPokemon = data;
+
+                    box.innerHTML =
+                        `<p>
+                            <strong>Selected Pokemon:</strong>
+                            ID #${data.id} - ${data.name}
+                        </p>`;
+                })
+                .catch(() => {
+                    box.innerHTML =
+                        `<p style="color: red;">
+                            Could not load character data.
+                        </p>`;
+                });
+        });
+
+        btnCreate.addEventListener('click', () => {
+            fetch(`/api/deandre/pokemon/team/${userId}`, {
+                method: 'POST'
+            })
+                .then(res => res.text())
+                .then(msg => {
+                    box.innerHTML =
+                        `<p style="color: green;">${msg}</p>`;
+                });
+        });
+
+        btnUpdate.addEventListener('click', () => {
+            if (!currentPokemon) {
+                box.innerHTML =
+                    `<p style="color: orange;">
+                        Get a random Pokemon first!
+                    </p>`;
+                return;
+            }
+
+            fetch(
+                `/api/deandre/pokemon/team/${userId}/${currentPokemon.id}`,
+                {
+                    method: 'PUT'
+                }
+            )
+                .then(res => res.text())
+                .then(msg => {
+                    box.innerHTML =
+                        `<p style="color: purple;">${msg}</p>`;
+                });
+        });
+
+        btnGet.addEventListener('click', () => {
+            fetch(`/api/deandre/pokemon/team/${userId}`)
+                .then(res => res.json())
+                .then(teamList => {
+                    if (teamList.length === 0) {
+                        box.innerHTML =
+                            `<p>
+                                Your team is empty!
+                                Use PUT to add members.
+                            </p>`;
+                        return;
+                    }
+
+                    let htmlContent =
+                        "<h3>Your Current Team:</h3>";
+
+                    teamList.forEach((poke, index) => {
+                        if (poke) {
+                            htmlContent +=
+                                `<p>
+                                    Slot [${index}]:
+                                    #${poke.id} - ${poke.name}
+                                </p>`;
+                        }
+                    });
+
+                    box.innerHTML = htmlContent;
+                });
+        });
+
+        btnDelete.addEventListener('click', () => {
+            fetch(`/api/deandre/pokemon/team/${userId}/0`, {
+                method: 'DELETE'
+            })
+                .then(res => res.text())
+                .then(msg => {
+                    box.innerHTML =
+                        `<p style="color: red;">${msg}</p>`;
+                });
+        });
+    </script>
+
+</body>
+</html>
