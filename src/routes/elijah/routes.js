@@ -1,7 +1,5 @@
 import { Router } from "express";
 
-let favoriteSong = "";
-
 const router = Router();
 
 const albums = {

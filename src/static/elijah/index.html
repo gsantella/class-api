@@ -90,213 +90,213 @@
         <p id="message" style="font-weight: bold; color: blue;"></p>
 
         <script>
-        const message = document.getElementById("message");
-        const content = document.getElementById("content");
+            const message = document.getElementById("message");
+            const content = document.getElementById("content");
 
-        document.getElementById("loadBtn").addEventListener("click", async (event) => {
-            try {
-                const response = await fetch("/api/elijah/albums");
-                const data = await response.json();
+            document.getElementById("loadBtn").addEventListener("click", async (event) => {
+                try {
+                    const response = await fetch("/api/elijah/albums");
+                    const data = await response.json();
 
-                content.textContent = JSON.stringify(data, null, 2);
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
-
-        document.getElementById("viewAlbum").addEventListener("submit", async (event) => {
-            event.preventDefault();
-
-            const albumName = document.getElementById("viewAlbumName").value;
-
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`);
-                const data = await response.json();
-
-                if (response.ok) {
                     content.textContent = JSON.stringify(data, null, 2);
-                    message.textContent = "Album loaded successfully!";
-                } else {
-                    message.textContent = data.error;
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("viewAlbum").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("viewAlbum").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("addAlbum").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const albumName = document.getElementById("viewAlbumName").value;
 
-            const albumData = {
-                albumName: document.getElementById("addAlbumName").value,
-                releaseDate: document.getElementById("addReleaseDate").value
-            };
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`);
+                    const data = await response.json();
 
-            try {
-                const response = await fetch("/api/elijah/albums", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(albumData)
-                });
+                    if (response.ok) {
+                        content.textContent = JSON.stringify(data, null, 2);
+                        message.textContent = "Album loaded successfully!";
+                    } else {
+                        message.textContent = data.error;
+                    }
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("viewAlbum").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("addAlbum").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("addAlbum").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("updateAlbum").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const albumData = {
+                    albumName: document.getElementById("addAlbumName").value,
+                    releaseDate: document.getElementById("addReleaseDate").value
+                };
 
-            const albumName = document.getElementById("updateAlbumName").value;
-            const albumData = {
-                releaseDate: document.getElementById("updateReleaseDate").value
-            };
+                try {
+                    const response = await fetch("/api/elijah/albums", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(albumData)
+                    });
 
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(albumData)
-                });
+                    const result = await response.json();
 
-                const result = await response.json();
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
 
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("addAlbum").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("updateAlbum").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("updateAlbum").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("deleteAlbum").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const albumName = document.getElementById("updateAlbumName").value;
+                const albumData = {
+                    releaseDate: document.getElementById("updateReleaseDate").value
+                };
 
-            const albumName = document.getElementById("deleteAlbumName").value;
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(albumData)
+                    });
 
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`, {
-                    method: "DELETE"
-                });
+                    const result = await response.json();
 
-                const result = await response.json();
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
 
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("updateAlbum").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("deleteAlbum").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("deleteAlbum").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("addSong").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const albumName = document.getElementById("deleteAlbumName").value;
 
-            const albumName = document.getElementById("targetAlbumForSong").value;
-            const songData = {
-                songName: document.getElementById("songName").value,
-                length: document.getElementById("songLength").value
-            };
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}`, {
+                        method: "DELETE"
+                    });
 
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}/songs`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(songData)
-                });
+                    const result = await response.json();
 
-                const result = await response.json();
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
 
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("deleteAlbum").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("addSong").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("addSong").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("renameAlbum").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const albumName = document.getElementById("targetAlbumForSong").value;
+                const songData = {
+                    songName: document.getElementById("songName").value,
+                    length: document.getElementById("songLength").value
+                };
 
-            const oldAlbumName = document.getElementById("renameOldAlbum").value;
-            const data = {
-                newAlbumName: document.getElementById("renameNewAlbum").value
-            };
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}/songs`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(songData)
+                    });
 
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(oldAlbumName)}/rename`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(data)
-                });
+                    const result = await response.json();
 
-                const result = await response.json();
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
 
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("addSong").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("renameAlbum").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
+            document.getElementById("renameAlbum").addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        document.getElementById("updateSong").addEventListener("submit", async (event) => {
-            event.preventDefault();
+                const oldAlbumName = document.getElementById("renameOldAlbum").value;
+                const data = {
+                    newAlbumName: document.getElementById("renameNewAlbum").value
+                };
 
-            const albumName = document.getElementById("updateSongAlbum").value;
-            const currentSongName = document.getElementById("currentSongName").value;
-            const songData = {
-                newTrackTitle: document.getElementById("newSongName").value,
-                newTrackDuration: document.getElementById("newSongLength").value
-            };
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(oldAlbumName)}/rename`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(data)
+                    });
 
-            try {
-                const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}/songs/${encodeURIComponent(currentSongName)}`, {
-                    method: "PUT",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify(songData)
-                });
+                    const result = await response.json();
 
-                const result = await response.json();
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
 
-                if (response.ok) {
-                    message.textContent = result.message;
-                } else {
-                    message.textContent = result.error;
+                    document.getElementById("renameAlbum").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
                 }
+            });
 
-                document.getElementById("updateSong").reset();
-            } catch (error) {
-                message.textContent = "Could not connect to the API.";
-            }
-        });
-    </script>
+            document.getElementById("updateSong").addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const albumName = document.getElementById("updateSongAlbum").value;
+                const currentSongName = document.getElementById("currentSongName").value;
+                const songData = {
+                    newTrackTitle: document.getElementById("newSongName").value,
+                    newTrackDuration: document.getElementById("newSongLength").value
+                };
+
+                try {
+                    const response = await fetch(`/api/elijah/albums/${encodeURIComponent(albumName)}/songs/${encodeURIComponent(currentSongName)}`, {
+                        method: "PUT",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify(songData)
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        message.textContent = result.message;
+                    } else {
+                        message.textContent = result.error;
+                    }
+
+                    document.getElementById("updateSong").reset();
+                } catch (error) {
+                    message.textContent = "Could not connect to the API.";
+                }
+            });
+        </script>
     </body>
 </html>
