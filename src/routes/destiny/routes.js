@@ -36,8 +36,8 @@ router.get('/songs', (req, res) => {
 });
 
 router.get('/color', (req, res) => {
-  const randomIndex = Math.floor(Math.random() * colors.length);
-  const randomColor = colors[randomIndex];
+  let randomIndex = Math.floor(Math.random() * colors.length);
+  let randomColor = colors[randomIndex];
   res.send(randomColor)
 });
 
