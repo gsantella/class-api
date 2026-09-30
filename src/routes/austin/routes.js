@@ -1,6 +1,11 @@
 import { Router } from 'express';
+import { Sequelize, DataTypes } from 'sequelize';
 
-const router = Router();
+export const sequelize = new Sequelize({
+  dialect: 'sqlite',
+  storage: 'database.sqlite',
+  logging: false, // hides the SQL spam; set to console.log to see queries
+});
 
 const teams = {
     "Arizona Cardinals": {
@@ -44,6 +49,66 @@ const teams = {
     ]
   };
 
+const Teams = sequelize.define('Teams', {
+  teamName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  stadium: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  conference: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  division: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+const TeamFacts = sequelize.define('TeamFacts', {
+  teamName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  facts: {
+    type: DataTypes.TEXT,
+    allowNull: false,
+  },
+});
+try {
+  await sequelize.authenticate();
+  await sequelize.sync();
+} catch (error) {
+  console.error('Unable to connect to the database:', error);
+}
+const router = Router();
+
+async function populateDatabase() {
+  for (const [teamName, teamData] of Object.entries(teams)) {
+    await Teams.findOrCreate({ where: { teamName }, defaults: teamData });
+  }
+  for (const [teamName, teamFacts] of Object.entries(facts)) {
+    await TeamFacts.findOrCreate({
+      where: { teamName },
+      defaults: { facts: teamFacts.join('\n') },
+    });
+  }
+}
+
+await populateDatabase();
+
 
 
 router.get("/", (req, res) => {
@@ -77,75 +142,72 @@ router.get("/hotsauce", (req, res) => {
   }
 });
 
-router.get("/teams", (req, res) => {
-  res.json(teams);
+router.get("/teams", async (req, res)  => {
+  const allTeams = await Teams.findAll();
+  res.json(allTeams);
 });
 
-router.get("/team/:teamName", (req, res) => {
+router.get("/team/:teamName", async (req, res) => {
   const teamName = req.params.teamName;
-  const team = teams[teamName];
+  const team = await Teams.findOne({ where: { teamName } });
   if (!team) {
     return res.status(404).json({ error: "Team not found" });
   }
-
-  res.json({ teamName: teamName, ...team });
+  res.json(team);
 })
-router.get("/teamFacts", (req, res) => {
-  res.json(facts);
+router.get("/teamFacts", async (req, res) => {
+  const allFacts = await TeamFacts.findAll();
+  res.json(allFacts.map(f => ({ teamName: f.teamName, facts: f.facts.split('\n') })));
 });
 
-router.get("/teamFacts/:teamName", (req, res) => {
+router.get("/teamFacts/:teamName",  async (req, res) => {
   const teamName = req.params.teamName;
-  const teamFacts = facts[teamName];
+  const teamFacts = await TeamFacts.findOne({ where: { teamName } });
 
   if (!teamFacts) {
     return res.status(404).json({ error: "Team not found" });
   }
-
-  res.json({ teamName: teamName, facts: teamFacts });
+  res.json({ teamName, facts: teamFacts.facts.split('\n') });
 });
 
-router.post("/team", (req, res) => {
+router.post("/team", async (req, res) => {
   const { teamName, city, state, stadium, conference, division } = req.body;
 
   console.log("Received team data:", req.body);
 
-  if (!city || !state || !stadium || !conference || !division) {
-    return res.status(400).json({ error: "Missing required fields" });
+  if (!teamName || !city || !state || !stadium || !conference || !division) {
+  return res.status(400).json({ error: "Missing required fields" });
   }
 
   if( teams[teamName]) {
     return res.status(409).json({ error: "Team already exists" });
   }
-  teams[teamName] = { city, state, stadium, conference, division };
-  res.status(201).json({ message: "Team added successfully", team: teams[teamName] });
+  try {
+    const newTeam = await Teams.create({ teamName, city, state, stadium, conference, division });
+    res.status(201).json({ message: "Team added successfully", team: newTeam });
+  } catch (err) {
+    if (err.name === "SequelizeUniqueConstraintError") {
+      return res.status(409).json({ error: "Team already exists" });
+    }
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-router.put("/team/:teamName", (req, res) => {
-  const teamName = req.params.teamName;
+router.put("/team/:teamName",  async (req, res) => {
   const { city, state, stadium, conference, division } = req.body;
-
-  
-
-  if( !teams[teamName]) {
-    return res.status(404).json({ error: "Team not found" });
-  }
-  if( !city || !state || !stadium || !conference || !division) {
+  if (!city || !state || !stadium || !conference || !division) {
     return res.status(400).json({ error: "Missing required fields" });
   }
+  const team = await Teams.findOne({ where: { teamName: req.params.teamName } });
+  if (!team) return res.status(404).json({ error: "Team not found" });
 
-  teams[teamName] = { city, state, stadium, conference, division };
-  res.json({ message: "Team updated successfully", team: teams[teamName] });
+  await team.update({ city, state, stadium, conference, division });
+  res.json({ message: "Team updated successfully", team });
 });
 
-router.delete("/team/:teamName", (req, res) => {
-  const teamName = req.params.teamName;
-
-  if (!teams[teamName]) {
-    return res.status(404).json({ error: "Team not found" });
-  }
-
-  delete teams[teamName];
+router.delete("/team/:teamName", async (req, res) => {
+  const deleted = await Teams.destroy({ where: { teamName: req.params.teamName } });
+  if (!deleted) return res.status(404).json({ error: "Team not found" });
   res.json({ message: "Team deleted successfully" });
 });
 

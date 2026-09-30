@@ -1,262 +1,257 @@
-<h1>I am Austin</h1>
+<!DOCTYPE html>
+<html lang="en">
 
-<button id="loadBtn">Click me</button>
-<div id="content">click the button to load it from the API</div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Austin's API</title>
+</head>
 
-<form id="favoriteTeam"
-      style="display: flex; flex-direction: column; max-width: fit-content;">
+<body>
+    <h1>I am Austin</h1>
 
-    <input type="text" id="favteamName" name="teamName"
-           placeholder="Enter Favorite Team Name" required>
+    <button id="loadBtn">Click me</button>
+    <div id="content">click the button to load it from the API</div>
 
-    <label>
-        <input type="radio" name="method" value="POST" required>
-        POST
-    </label>
+    <form id="favoriteTeam" style="display: flex; flex-direction: column; max-width: fit-content;">
 
-    <label>
-        <input type="radio" name="method" value="PUT">
-        PUT
-    </label>
+        <input type="text" id="favteamName" name="teamName" placeholder="Enter Favorite Team Name" required>
 
-    <label>
-        <input type="radio" name="method" value="DELETE">
-        DELETE
-    </label>
+        <label>
+            <input type="radio" name="method" value="POST" required>
+            POST
+        </label>
 
-    <button type="submit">Submit</button>
-</form>
-<div style="display: flex; gap: 30px; align-items: flex-start;"> 
-    <form id="addTeam"
-      style="display: flex; flex-direction: column; max-width: fit-content;">
+        <label>
+            <input type="radio" name="method" value="PUT">
+            PUT
+        </label>
 
-        <input type="text" id="teamName" name="teamName"
-            placeholder="Enter Team Name" required>
+        <label>
+            <input type="radio" name="method" value="DELETE">
+            DELETE
+        </label>
 
-        <input type="text" id="city" name="city"
-            placeholder="Enter their City" required>
-
-        <input type="text" id="state" name="state"
-            placeholder="Enter their State" required>
-
-        <input type="text" id="stadium" name="stadium"
-            placeholder="Enter their Stadium" required>
-
-        <input type="text" id="conf" name="conf"
-            placeholder="Enter their Conference" required>
-
-        <input type="text" id="division" name="division"
-            placeholder="Enter their Division" required>
-
-        <button type="submit">Post</button>
+        <button type="submit">Submit</button>
     </form>
+    <div style="display: flex; gap: 30px; align-items: flex-start;">
+        <form id="addTeam" style="display: flex; flex-direction: column; max-width: fit-content;">
 
-    <form id="updateTeam"
-        style="display: flex; flex-direction: column; max-width: fit-content;">
+            <input type="text" id="teamName" name="teamName" placeholder="Enter Team Name" required>
 
-        <input type="text" id="updateteamName" name="teamName"
-            placeholder="Enter Team Name" required>
+            <input type="text" id="city" name="city" placeholder="Enter their City" required>
 
-        <input type="text" id="updatecity" name="city"
-            placeholder="Enter their City" required>
+            <input type="text" id="state" name="state" placeholder="Enter their State" required>
 
-        <input type="text" id="updatestate" name="state"
-            placeholder="Enter their State" required>
+            <input type="text" id="stadium" name="stadium" placeholder="Enter their Stadium" required>
 
-        <input type="text" id="updatestadium" name="stadium"
-            placeholder="Enter their Stadium" required>
+            <input type="text" id="conf" name="conf" placeholder="Enter their Conference" required>
 
-        <input type="text" id="updateconf" name="conf"
-            placeholder="Enter their Conference" required>
+            <input type="text" id="division" name="division" placeholder="Enter their Division" required>
 
-        <input type="text" id="updatedivision" name="division"
-            placeholder="Enter their Division" required>
+            <button type="submit">Post</button>
+        </form>
 
-        <button type="submit">Update</button>
-    </form>
-      <form id="deleteTeam"
-        style="display: flex; flex-direction: column; max-width: fit-content;">
+        <form id="updateTeam" style="display: flex; flex-direction: column; max-width: fit-content;">
 
-        <input type="text" id="deleteteamName" name="teamName"
-            placeholder="Enter Team Name" required>
+            <input type="text" id="updateteamName" name="teamName" placeholder="Enter Team Name" required>
 
-        <button type="submit">Delete</button>
-    </form>
-</div>
+            <input type="text" id="updatecity" name="city" placeholder="Enter their City" required>
 
+            <input type="text" id="updatestate" name="state" placeholder="Enter their State" required>
 
-<p id="message"></p>
+            <input type="text" id="updatestadium" name="stadium" placeholder="Enter their Stadium" required>
 
-<script>
-    document.getElementById('loadBtn').addEventListener('click', () => {
-        fetch('/api/austin/randomColor/')
-            .then(res => res.text())
-            .then(text => {
-                document.getElementById('content').textContent = text;
-            })
-            .catch(err => console.error(err));
-    });
+            <input type="text" id="updateconf" name="conf" placeholder="Enter their Conference" required>
+
+            <input type="text" id="updatedivision" name="division" placeholder="Enter their Division" required>
+
+            <button type="submit">Update</button>
+        </form>
+        <form id="deleteTeam" style="display: flex; flex-direction: column; max-width: fit-content;">
+
+            <input type="text" id="deleteteamName" name="teamName" placeholder="Enter Team Name" required>
+
+            <button type="submit">Delete</button>
+        </form>
+    </div>
 
 
-    const form2 = document.getElementById("favoriteTeam");
+    <p id="message"></p>
 
-    form2.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-        const teamName = document.getElementById("favteamName").value;
-
-        const selectedMethod = document.querySelector(
-            'input[name="method"]:checked'
-        );
-
-        if (!selectedMethod) {
-            return;
-        }
-
-        const method = selectedMethod.value;
-
-        try {
-            const response = await fetch("/api/austin/favoriteTeam", {
-                method: method,
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    teamName: teamName
+    <script>
+        document.getElementById('loadBtn').addEventListener('click', () => {
+            fetch('/api/austin/randomColor/')
+                .then(res => res.text())
+                .then(text => {
+                    document.getElementById('content').textContent = text;
                 })
-            });
+                .catch(err => console.error(err));
+        });
 
-            const result = await response.json();
 
-            console.log(result);
+        const form2 = document.getElementById("favoriteTeam");
 
-        } catch (error) {
-            console.error(error);
-        }
-    });
-    const form = document.getElementById("addTeam");
-    const message = document.getElementById("message");
-    
-    form.addEventListener("submit", async (event) => {
-        event.preventDefault();
+        form2.addEventListener("submit", async (event) => {
+            event.preventDefault();
 
-        const team = {
-            teamName: document.getElementById("teamName").value,
-            city: document.getElementById("city").value,
-            state: document.getElementById("state").value,
-            stadium: document.getElementById("stadium").value,
-            conference: document.getElementById("conf").value,
-            division: document.getElementById("division").value
-        };
+            const teamName = document.getElementById("favteamName").value;
 
-        try {
-            const response = await fetch("/api/austin/team", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(team)
-            });
+            const selectedMethod = document.querySelector(
+                'input[name="method"]:checked'
+            );
 
-            const result = await response.json();
-
-            if (!response.ok) {
-                message.textContent = result.error;
+            if (!selectedMethod) {
                 return;
             }
 
-            message.textContent = result.message;
+            const method = selectedMethod.value;
 
+            try {
+                const response = await fetch("/api/austin/favoriteTeam", {
+                    method: method,
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        teamName: teamName
+                    })
+                });
 
-            form.reset();
+                const result = await response.json();
 
-        } catch (error) {
-            message.textContent = "Could not connect to the API.";
-            console.error(error);
-        }
+                console.log(result);
 
-    });
-    const form3 = document.getElementById("updateTeam");
-
-    form3.addEventListener("submit", async (event) => {
-        event.preventDefault();
-
-
-        const teamName = document.getElementById("updateteamName").value;
-        const team = {
-            city: document.getElementById("updatecity").value,
-            state: document.getElementById("updatestate").value,
-            stadium: document.getElementById("updatestadium").value,
-            conference: document.getElementById("updateconf").value,
-            division: document.getElementById("updatedivision").value
-        };
-
-        try {
-            const response = await fetch(`/api/austin/team/${encodeURIComponent(teamName)}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(team)
-            });
-
-            const result = await response.json();
-
-            if (!response.ok) {
-                message.textContent = result.error;
-                return;
+            } catch (error) {
+                console.error(error);
             }
+        });
+        const form = document.getElementById("addTeam");
+        const message = document.getElementById("message");
 
-            message.textContent = result.message;
+        form.addEventListener("submit", async (event) => {
+            event.preventDefault();
 
+            const team = {
+                teamName: document.getElementById("teamName").value,
+                city: document.getElementById("city").value,
+                state: document.getElementById("state").value,
+                stadium: document.getElementById("stadium").value,
+                conference: document.getElementById("conf").value,
+                division: document.getElementById("division").value
+            };
 
-            form3.reset();
+            try {
+                const response = await fetch("/api/austin/team", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(team)
+                });
 
-        } catch (error) {
-            message.textContent = "Could not connect to the API.";
-            console.error(error);
-        }
+                const result = await response.json();
 
-    });
-
-    const form4 = document.getElementById("deleteTeam");
-
-    form4.addEventListener("submit", async (event) => {
-        event.preventDefault();
-        
-
-        const teamName = document.getElementById("deleteteamName").value;
-
-        try {
-            const response = await fetch(`/api/austin/team/${encodeURIComponent(teamName)}`, {
-                method: "DELETE",
-                headers: {
-                    "Content-Type": "application/json"
+                if (!response.ok) {
+                    message.textContent = result.error;
+                    return;
                 }
-            });
 
-            const result = await response.json();
+                message.textContent = result.message;
 
-            if (!response.ok) {
-                message.textContent = result.error;
-                return;
+
+                form.reset();
+
+            } catch (error) {
+                message.textContent = "Could not connect to the API.";
+                console.error(error);
             }
 
-            message.textContent = result.message;
+        });
+        const form3 = document.getElementById("updateTeam");
+
+        form3.addEventListener("submit", async (event) => {
+            event.preventDefault();
 
 
-            form4.reset();
+            const teamName = document.getElementById("updateteamName").value;
+            const team = {
+                city: document.getElementById("updatecity").value,
+                state: document.getElementById("updatestate").value,
+                stadium: document.getElementById("updatestadium").value,
+                conference: document.getElementById("updateconf").value,
+                division: document.getElementById("updatedivision").value
+            };
 
-        } catch (error) {
-            message.textContent = "Could not connect to the API.";
-            console.error(error);
+            try {
+                const response = await fetch(`/api/austin/team/${encodeURIComponent(teamName)}`, {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(team)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    message.textContent = result.error;
+                    return;
+                }
+
+                message.textContent = result.message;
+
+
+                form3.reset();
+
+            } catch (error) {
+                message.textContent = "Could not connect to the API.";
+                console.error(error);
+            }
+
+        });
+
+        const form4 = document.getElementById("deleteTeam");
+
+        form4.addEventListener("submit", async (event) => {
+            event.preventDefault();
+
+
+            const teamName = document.getElementById("deleteteamName").value;
+
+            try {
+                const response = await fetch(`/api/austin/team/${encodeURIComponent(teamName)}`, {
+                    method: "DELETE",
+                    headers: {
+                        "Content-Type": "application/json"
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    message.textContent = result.error;
+                    return;
+                }
+
+                message.textContent = result.message;
+
+
+                form4.reset();
+
+            } catch (error) {
+                message.textContent = "Could not connect to the API.";
+                console.error(error);
+            }
+
+        });
+    </script>
+
+    <style>
+        input {
+            margin: 5px;
         }
+    </style>
+</body>
 
-    });
-</script>
-
-<style>
-    input {
-        margin:5px;
-    }
-</style>
+</html>
