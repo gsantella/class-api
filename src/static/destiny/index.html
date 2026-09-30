@@ -1,1 +1,16 @@
 <h1>Destiny lives here! (no i dont)</h1>
+
+<button id="loadBtn">Click Me!</button>
+<div id="content">Click this button to get a random color!</div>
+<div id="color">Random Color</div>
+
+<script>
+    document.getElementById('loadBtn').addEventListener('click', () => {
+        fetch('/api/destiny/color')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('color').textContent = text;
+            })
+            .catch(err => console.error(err));
+    });
+</script>
