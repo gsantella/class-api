@@ -6,6 +6,7 @@ import blc from "./cards/blc.json" with { type: "json" };
 
 const router = Router();
 
+
 router.get("/", (req, res) => {
     res.send("You've reached the Cameron Lynch API, how may I help you?")
 });
@@ -16,6 +17,22 @@ const colors = ["red", "orange", "yellow", "green", "blue", "indigo", "violet"];
 
 router.get("/color", (req, res) => {
     res.send(colors[Math.floor(Math.random() * colors.length)]);
+});
+
+// single variable "word"
+
+let word = "defaultWord";
+
+router.get("/word", (req, res) => {
+  res.send(word)
+});
+
+router.patch('/word', (req, res) => {
+  word = req.body.value;
+});
+
+router.delete('/word', (req, res) => {
+  word = "";
 });
 
 //cards section

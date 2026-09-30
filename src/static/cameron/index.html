@@ -4,6 +4,12 @@
 <div id="content">click the button to load it from the API</div>
 
 <button id="colorBtn">Colors!</button>
+<br>
+<input id="word">
+<br>
+<button id="getWordBtn">Get</button>
+<button id="patchWordBtn">Patch</button>
+<button id="deleteWordBtn">Delete</button>
 
 <script>
     document.getElementById('loadBtn').addEventListener('click', () => {
@@ -21,6 +27,34 @@
             .then(text => {
                 document.getElementById('colorBtn').style.backgroundColor = text;
             })
+            .catch(err => console.error(err));
+    });
+
+    document.getElementById('getWordBtn').addEventListener('click', () => {
+        fetch('/api/cameron/word')
+            .then(res => res.text())
+            .then(text => {
+                document.getElementById('word').value = text;
+            })
+            .catch(err => console.error(err));
+    });
+
+    document.getElementById('patchWordBtn').addEventListener('click', () => {
+        const textPayload = {
+                value: document.getElementById('word').value
+            };
+        fetch("/api/cameron/word", {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(textPayload)
+        });
+    });
+
+    document.getElementById('deleteWordBtn').addEventListener('click', () => {
+        fetch('/api/cameron/word', {
+            method: "DELETE"
+        })
+            .then(document.getElementById('word').value = "")
             .catch(err => console.error(err));
     });
 </script>
