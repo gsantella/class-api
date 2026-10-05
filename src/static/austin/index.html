@@ -34,6 +34,7 @@
 
         <button type="submit">Submit</button>
     </form>
+    <button id="getButton">Get Favorite Team</button>
     <div style="display: flex; gap: 30px; align-items: flex-start;">
         <form id="addTeam" style="display: flex; flex-direction: column; max-width: fit-content;">
 
@@ -80,6 +81,18 @@
     <p id="message"></p>
 
     <script>
+        document.getElementById("getButton").addEventListener('click', async () => {
+            try {
+                const res = await fetch("/api/austin/favoriteTeam");
+                if (!res.ok) throw new Error(`HTTP Error: ${res.status}`);
+                
+                const teamText = await res.json();
+                const { favoriteTeam } = teamText;
+                document.getElementById('favteamName').value = favoriteTeam;
+            } catch(err){
+                console.error(err);
+            }
+        });
         document.getElementById('loadBtn').addEventListener('click', () => {
             fetch('/api/austin/randomColor/')
                 .then(res => res.text())
