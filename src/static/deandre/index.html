@@ -34,7 +34,7 @@
 
         input {
             padding: 8px;
-            margin-left: 5px;
+            margin: 5px;
         }
 
         button {
@@ -86,6 +86,11 @@
         <section class="team-section">
             <h2>Team Management</h2>
 
+            <p>
+                Current User ID:
+                <strong id="currentUserId">deandre</strong>
+            </p>
+
             <button id="btnCreateTeam">
                 POST (Create Team)
             </button>
@@ -102,10 +107,37 @@
                 DELETE (Remove Member)
             </button>
 
-            <button id="btnColor">
-                Get a random color
+            <br>
+
+            <input
+                type="text"
+                id="userIdInput"
+                placeholder="Enter User ID"
+            >
+
+            <button id="btnChangeId">
+                Change User ID
             </button>
+
+            <button id="btnSwitchUser">
+                Switch User
+            </button>
+
+            <br>
         </section>
+
+        <section class="color-section">
+            <h2>Color Display</h2>
+            <p>
+                 <input
+                type="text"
+                id="favColor"
+                placeholder="Enter your favorite color"
+                >
+                <button id="btnColor">
+                Display a Color
+            </button>
+            </p>
 
         <section>
             <div id="box"></div>
@@ -121,175 +153,426 @@
     </main>
 
     <script>
-        const btnRandom = document.getElementById('btnRandomPoke');
-        const btnCreate = document.getElementById('btnCreateTeam');
-        const btnGet = document.getElementById('btnGetTeam');
-        const btnUpdate = document.getElementById('btnUpdateTeam');
-        const btnDelete = document.getElementById('btnDeleteTeam');
+         const btnColor = document.getElementById('btnColor'); // Gets a random color and displays it in the box
+         const txtFav = document.getElementById('favColor'); // User can enter their favorite color and display it in the box
+
+
+        const btnRandom = document.getElementById('btnRandomPoke'); // Grabs a random Pokemon (1 - 493)
+        const btnCreate = document.getElementById('btnCreateTeam'); // Creates a new team for the current user
+        const btnGet = document.getElementById('btnGetTeam'); // Gets the current user's team
+        const btnUpdate = document.getElementById('btnUpdateTeam'); // Updates the current user's team with the selected Pokemon
+        const btnDelete = document.getElementById('btnDeleteTeam'); // Deletes a Pokemon from the current user's team
+        const btnChangeId = document.getElementById('btnChangeId'); // Changes the current user's ID to the value in the userIdInput field
+        const btnSwitchUser = document.getElementById('btnSwitchUser'); // Switches to a different user ID and displays their team
+
         const box = document.getElementById('box');
         const pokeInput = document.getElementById('pokeInput');
+        const userIdInput = document.getElementById('userIdInput');
         const btnSearch = document.getElementById('PokeSearch');
-        const btnColor = document.getElementById('btnColor');
+        const currentUserId = document.getElementById('currentUserId');
 
         let currentPokemon = null;
-        const userId = "deandre";
-        
-       btnColor.addEventListener('click', () => {
-    const colors = ["red", "blue", "green", "yellow", "purple"];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-    box.innerHTML = `
-        <p style="color: ${randomColor};">
-            This is a random color: ${randomColor}
-        </p>
-    `;
-});
+        let userId = "deandre";
 
 
-  btnSearch.addEventListener('click', () => {
-    const searchValue = pokeInput.value.trim();
+        function updateUserDisplay() {
+            currentUserId.textContent = userId;
+        }
 
-    console.log("Search button clicked!");
-    console.log("Searching for:", searchValue);
+        // Piece 1 added a button that displays a random color
+        // Piece 2 added a text feild that allows the user to enter their favorite color and display it in the box
+        btnColor.addEventListener('click', () => {
+            const colors = [
+                "red",
+                "blue",
+                "green",
+                "yellow",
+                "purple"
+            ];
 
-    if (!searchValue) {
-        box.innerHTML = `
-            <p style="color: orange;">
-                Please enter a Pokemon ID or name.
-            </p>
-        `;
-        return;
-    }
+            const userColor = txtFav.value.trim();
+            if(userColor == ""){
+                const randomColor =
+                colors[Math.floor(Math.random() * colors.length)];
 
-    fetch(`/api/deandre/pokemon/${encodeURIComponent(searchValue)}`)
-        .then(res => {
-            console.log("Response status:", res.status);
+            box.innerHTML = `
+                <p style="color: ${randomColor};">
+                    This is a random color: ${randomColor}
+                </p>
+            `;
+            }
+            else{
+                box.innerHTML = `
+                <p style="color: ${userColor};">
+                    This is your favorite color: ${userColor}
+                </p>
+            `;
+            }
+        });
 
-            if (!res.ok) {
-                throw new Error("Pokemon not found");
+
+        btnSearch.addEventListener('click', () => {
+            const searchValue = pokeInput.value.trim();
+
+            if (!searchValue) {
+                box.innerHTML = `
+                    <p style="color: orange;">
+                        Please enter a Pokemon ID or name.
+                    </p>
+                `;
+
+                return;
             }
 
-            return res.json();
-        })
-        .then(data => {
-            console.log("Pokemon found:", data);
-
-            currentPokemon = data;
-
-            box.innerHTML = `
-                <p>
-                    <strong>Selected Pokemon:</strong>
-                    ID #${data.id} - ${data.name}
-                </p>
-            `;
-        })
-        .catch(error => {
-            console.error("Search error:", error);
-
-            box.innerHTML = `
-                <p style="color: red;">
-                    Could not find that Pokemon.
-                </p>
-            `;
-        });
-});
-
-        btnRandom.addEventListener('click', () => {
-            const randomNum = Math.floor(Math.random() * 493) + 1;
-
-            fetch(`/api/deandre/pokemon/${randomNum}`)
+            fetch(
+                `/api/deandre/pokemon/${encodeURIComponent(searchValue)}`
+            )
                 .then(res => {
-                    if (!res.ok) throw new Error();
+                    if (!res.ok) {
+                        throw new Error("Pokemon not found");
+                    }
+
                     return res.json();
                 })
                 .then(data => {
                     currentPokemon = data;
 
-                    box.innerHTML =
-                        `<p>
-                            <strong>Selected Pokemon:</strong>
-                            ID #${data.id} - ${data.name}
-                        </p>`;
+                    box.innerHTML = `
+                        <h3>Selected Pokemon</h3>
+
+                        <p>
+                            <strong>ID:</strong>
+                            #${data.id}
+                        </p>
+
+                        <p>
+                            <strong>Name:</strong>
+                            ${data.name}
+                        </p>
+
+                        <p>
+                            <strong>Type:</strong>
+                            ${data.type}
+                        </p>
+                    `;
                 })
                 .catch(() => {
-                    box.innerHTML =
-                        `<p style="color: red;">
-                            Could not load character data.
-                        </p>`;
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            Could not find that Pokemon.
+                        </p>
+                    `;
                 });
         });
+
+
+        btnRandom.addEventListener('click', () => {
+            const randomNum =
+                Math.floor(Math.random() * 493) + 1;
+
+            fetch(`/api/deandre/pokemon/${randomNum}`)
+                .then(res => {
+                    if (!res.ok) {
+                        throw new Error();
+                    }
+
+                    return res.json();
+                })
+                .then(data => {
+                    currentPokemon = data;
+
+                    box.innerHTML = `
+                        <h3>Random Pokemon</h3>
+
+                        <p>
+                            <strong>ID:</strong>
+                            #${data.id}
+                        </p>
+
+                        <p>
+                            <strong>Name:</strong>
+                            ${data.name}
+                        </p>
+
+                        <p>
+                            <strong>Type:</strong>
+                            ${data.type}
+                        </p>
+                    `;
+                })
+                .catch(() => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            Could not load Pokemon data.
+                        </p>
+                    `;
+                });
+        });
+
 
         btnCreate.addEventListener('click', () => {
-            fetch(`/api/deandre/pokemon/team/${userId}`, {
+            fetch(`/api/deandre/pokemon/team/${encodeURIComponent(userId)}`, {
                 method: 'POST'
             })
-                .then(res => res.text())
+                .then(async res => {
+                    const msg = await res.text();
+
+                    if (!res.ok) {
+                        throw new Error(msg);
+                    }
+
+                    return msg;
+                })
                 .then(msg => {
-                    box.innerHTML =
-                        `<p style="color: green;">${msg}</p>`;
+                    box.innerHTML = `
+                        <p style="color: green;">
+                            ${msg}
+                        </p>
+                    `;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
                 });
         });
 
-        btnUpdate.addEventListener('click', () => {
-            if (!currentPokemon) {
-                box.innerHTML =
-                    `<p style="color: orange;">
-                        Get a random Pokemon first!
-                    </p>`;
-                return;
-            }
-
-            fetch(
-                `/api/deandre/pokemon/team/${userId}/${currentPokemon.id}`,
-                {
-                    method: 'PUT'
-                }
-            )
-                .then(res => res.text())
-                .then(msg => {
-                    box.innerHTML =
-                        `<p style="color: purple;">${msg}</p>`;
-                });
-        });
 
         btnGet.addEventListener('click', () => {
-            fetch(`/api/deandre/pokemon/team/${userId}`)
-                .then(res => res.json())
+            fetch(`/api/deandre/pokemon/team/${encodeURIComponent(userId)}`)
+                .then(async res => {
+                    if (!res.ok) {
+                        const msg = await res.text();
+                        throw new Error(msg);
+                    }
+
+                    return res.json();
+                })
                 .then(teamList => {
                     if (teamList.length === 0) {
-                        box.innerHTML =
-                            `<p>
+                        box.innerHTML = `
+                            <p>
                                 Your team is empty!
                                 Use PUT to add members.
-                            </p>`;
+                            </p>
+                        `;
+
                         return;
                     }
 
                     let htmlContent =
-                        "<h3>Your Current Team:</h3>";
+                        `<h3>Team for ${userId}:</h3>`;
 
                     teamList.forEach((poke, index) => {
                         if (poke) {
-                            htmlContent +=
-                                `<p>
-                                    Slot [${index}]:
-                                    #${poke.id} - ${poke.name}
-                                </p>`;
+                            htmlContent += `
+                                <p>
+                                    <strong>Slot [${index}]</strong>
+                                    <br>
+                                    ID: #${poke.id}
+                                    <br>
+                                    Name: ${poke.name}
+                                    <br>
+                                    Type: ${poke.type}
+                                </p>
+
+                                <hr>
+                            `;
                         }
                     });
 
                     box.innerHTML = htmlContent;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
                 });
         });
 
-        btnDelete.addEventListener('click', () => {
-            fetch(`/api/deandre/pokemon/team/${userId}/0`, {
-                method: 'DELETE'
-            })
-                .then(res => res.text())
+
+        btnUpdate.addEventListener('click', () => {
+            if (!currentPokemon) {
+                box.innerHTML = `
+                    <p style="color: orange;">
+                        Search for a Pokemon first!
+                    </p>
+                `;
+
+                return;
+            }
+
+            fetch(
+                `/api/deandre/pokemon/team/${encodeURIComponent(userId)}/${currentPokemon.id}`,
+                {
+                    method: 'PUT'
+                }
+            )
+                .then(async res => {
+                    const msg = await res.text();
+
+                    if (!res.ok) {
+                        throw new Error(msg);
+                    }
+
+                    return msg;
+                })
                 .then(msg => {
-                    box.innerHTML =
-                        `<p style="color: red;">${msg}</p>`;
+                    box.innerHTML = `
+                        <p style="color: purple;">
+                            ${msg}
+                        </p>
+                    `;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
+                });
+        });
+
+
+        btnDelete.addEventListener('click', () => {
+            const slot = prompt(
+                "Enter the slot number to remove (0-5):"
+            );
+
+            if (slot === null) {
+                return;
+            }
+
+            fetch(
+                `/api/deandre/pokemon/team/${encodeURIComponent(userId)}/${slot}`,
+                {
+                    method: 'DELETE'
+                }
+            )
+                .then(async res => {
+                    const msg = await res.text();
+
+                    if (!res.ok) {
+                        throw new Error(msg);
+                    }
+
+                    return msg;
+                })
+                .then(msg => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${msg}
+                        </p>
+                    `;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
+                });
+        });
+
+
+        btnChangeId.addEventListener('click', () => {
+            const newId = userIdInput.value.trim();
+
+            if (!newId) {
+                box.innerHTML = `
+                    <p style="color: orange;">
+                        Please enter a User ID.
+                    </p>
+                `;
+
+                return;
+            }
+
+            fetch(
+                `/api/deandre/pokemon/team/${encodeURIComponent(userId)}/change-id/${encodeURIComponent(newId)}`,
+                {
+                    method: 'PUT'
+                }
+            )
+                .then(async res => {
+                    const msg = await res.text();
+
+                    if (!res.ok) {
+                        throw new Error(msg);
+                    }
+
+                    return msg;
+                })
+                .then(msg => {
+                    userId = newId;
+
+                    updateUserDisplay();
+
+                    userIdInput.value = "";
+
+                    box.innerHTML = `
+                        <p style="color: green;">
+                            ${msg}
+                        </p>
+                    `;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
+                });
+        });
+
+
+        btnSwitchUser.addEventListener('click', () => {
+            const newId = userIdInput.value.trim();
+
+            if (!newId) {
+                box.innerHTML = `
+                    <p style="color: orange;">
+                        Please enter a User ID.
+                    </p>
+                `;
+
+                return;
+            }
+
+            fetch(
+                `/api/deandre/pokemon/team/${encodeURIComponent(newId)}`
+            )
+                .then(async res => {
+                    if (!res.ok) {
+                        const msg = await res.text();
+                        throw new Error(msg);
+                    }
+
+                    return res.json();
+                })
+                .then(() => {
+                    userId = newId;
+
+                    updateUserDisplay();
+
+                    userIdInput.value = "";
+
+                    box.innerHTML = `
+                        <p style="color: green;">
+                            Switched to User ID: ${userId}
+                        </p>
+                    `;
+                })
+                .catch(error => {
+                    box.innerHTML = `
+                        <p style="color: red;">
+                            ${error.message}
+                        </p>
+                    `;
                 });
         });
     </script>
