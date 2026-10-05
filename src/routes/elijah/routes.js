@@ -1,4 +1,11 @@
 import { Router } from "express";
+import { Sequelize, DataTypes } from "sequelize";
+
+export const sequelize = new Sequelize({
+  dialect: "sqlite",
+  storage: "brandnew.sqlite",
+  logging: false,
+});
 
 const router = Router();
 
@@ -88,6 +95,57 @@ const albums = {
     }
 };
 
+const Album = sequelize.define("Album", {
+  albumName: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+  },
+  releaseDate: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+const Song = sequelize.define("Song", {
+  trackTitle: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  trackDuration: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+});
+
+Album.hasMany(Song, { foreignKey: "albumId", as: "songs", onDelete: "CASCADE" });
+Song.belongsTo(Album, { foreignKey: "albumId" });
+
+try {
+  await sequelize.authenticate();
+  await sequelize.sync();
+} catch (error) {
+  console.error("Unable to connect to the database:", error);
+}
+
+async function populateDatabase() {
+  for (const [albumName, albumData] of Object.entries(albums)) {
+    const [album] = await Album.findOrCreate({
+      where: { albumName },
+      defaults: { releaseDate: albumData.releaseDate },
+    });
+
+    for (const song of albumData.songs) {
+      await Song.findOrCreate({
+        where: { albumId: album.id, trackTitle: song.trackTitle },
+        defaults: { trackDuration: song.trackDuration },
+      });
+    }
+  }
+}
+
+await populateDatabase();
+
 router.get("/", (req, res) => {
     res.send("Brand New");
 });
@@ -122,150 +180,158 @@ router.get("/hotsauce", (req, res) => {
     }
 });
 
-router.get("/albums", (req, res) => {
-    res.json(albums);
+router.get("/albums", async (req, res) => {
+  const allAlbums = await Album.findAll({
+    include: [{ model: Song, as: "songs", attributes: ["trackTitle", "trackDuration"] }],
+  });
+  res.json(allAlbums);
 });
 
-router.get("/albums/:albumName", (req, res) => {
-    const albumName = req.params.albumName;
-    const album = albums[albumName];
+router.get("/albums/:albumName", async (req, res) => {
+  const album = await Album.findOne({
+    where: { albumName: req.params.albumName },
+    include: [{ model: Song, as: "songs", attributes: ["trackTitle", "trackDuration"] }],
+  });
 
-    if (!album) {
-        res.status(404).json({ error: "Album not found" });
-    } else {
-        res.json({ albumName: albumName, details: album });
-    }
+  if (!album) {
+    return res.status(404).json({ error: "Album not found" });
+  }
+
+  res.json({
+    albumName: album.albumName,
+    details: {
+      releaseDate: album.releaseDate,
+      songs: album.songs,
+    },
+  });
 });
 
-router.post("/albums", (req, res) => {
-    const albumName = req.body.albumName;
-    const releaseDate = req.body.releaseDate;
+router.post("/albums", async (req, res) => {
+  const { albumName, releaseDate } = req.body;
 
-    if (!albumName || !releaseDate) {
-        res.status(400).json({ error: "Missing album name or release date" });
-    } else if (albums[albumName]) {
-        res.status(409).json({ error: "Album already exists" });
-    } else {
-        albums[albumName] = {
-            releaseDate: releaseDate,
-            songs: []
-        };
+  if (!albumName || !releaseDate) {
+    return res.status(400).json({ error: "Missing album name or release date" });
+  }
 
-        res.status(201).json({
-            message: "Album added successfully",
-            album: albums[albumName]
-        });
-    }
+  try {
+    const newAlbum = await Album.create({ albumName, releaseDate });
+    res.json({
+      message: "Album added successfully",
+      album: { ...newAlbum.toJSON(), songs: [] },
+    });
+  } catch (err) {
+    res.json({ error: "Database error" });
+  }
 });
 
-router.put("/albums/:albumName", (req, res) => {
-    const albumName = req.params.albumName;
-    const releaseDate = req.body.releaseDate;
+router.put("/albums/:albumName", async (req, res) => {
+  const { releaseDate } = req.body;
 
-    if (!albums[albumName]) {
-        res.status(404).json({ error: "Album not found" });
-    } else if (!releaseDate) {
-        res.status(400).json({ error: "Missing new release date" });
-    } else {
-        albums[albumName].releaseDate = releaseDate;
+  if (!releaseDate) {
+    return res.status(400).json({ error: "Missing new release date" });
+  }
 
-        res.json({
-            message: "Album updated successfully",
-            album: albums[albumName]
-        });
-    }
+  const album = await Album.findOne({
+    where: { albumName: req.params.albumName },
+    include: [{ model: Song, as: "songs", attributes: ["trackTitle", "trackDuration"] }],
+  });
+
+  if (!album) {
+    return res.status(404).json({ error: "Album not found" });
+  }
+
+  await album.update({ releaseDate });
+  res.json({ message: "Album updated successfully", album });
 });
 
-router.delete("/albums/:albumName", (req, res) => {
-    const albumName = req.params.albumName;
+router.put("/albums/:albumName/rename", async (req, res) => {
+  const { newAlbumName } = req.body;
 
-    if (!albums[albumName]) {
-        res.status(404).json({ error: "Album not found" });
-    } else {
-        delete albums[albumName];
-        res.json({ message: "Album deleted successfully" });
-    }
+  if (!newAlbumName) {
+    return res.status(400).json({ error: "Missing new album name" });
+  }
+
+  const album = await Album.findOne({ where: { albumName: req.params.albumName } });
+  if (!album) {
+    return res.status(404).json({ error: "Album not found" });
+  }
+
+  try {
+    await album.update({ albumName: newAlbumName });
+    res.json({ message: "Album renamed successfully", album });
+  } catch (err) {
+    res.status(500).json({ error: "Database error" });
+  }
 });
 
-router.post("/albums/:albumName/songs", (req, res) => {
-    const albumName = req.params.albumName;
-    const songName = req.body.songName;
-    const length = req.body.length;
-
-    if (!albums[albumName]) {
-        res.status(404).json({ error: "Album not found" });
-    } else if (!songName || !length) {
-        res.status(400).json({ error: "Missing song name or length" });
-    } else {
-        albums[albumName].songs.push({
-            trackTitle: songName,
-            trackDuration: length
-        });
-
-        res.status(201).json({
-            message: "Song added successfully",
-            songs: albums[albumName].songs
-        });
-    }
+router.delete("/albums/:albumName", async (req, res) => {
+  const deleted = await Album.destroy({ where: { albumName: req.params.albumName } });
+  if (!deleted) {
+    return res.status(404).json({ error: "Album not found" });
+  }
+  res.json({ message: "Album deleted successfully" });
 });
 
-router.put("/albums/:albumName/rename", (req, res) => {
-    const oldAlbumName = req.params.albumName;
-    const newAlbumName = req.body.newAlbumName;
+router.post("/albums/:albumName/songs", async (req, res) => {
+  const { songName, length } = req.body;
 
-    if (!albums[oldAlbumName]) {
-        res.status(404).json({ error: "Album not found" });
-    } else if (!newAlbumName) {
-        res.status(400).json({ error: "Missing new album name" });
-    } else if (albums[newAlbumName]) {
-        res.status(409).json({ error: "An album with that name already exists" });
-    } else {
-        albums[newAlbumName] = albums[oldAlbumName];
-        delete albums[oldAlbumName];
+  if (!songName || !length) {
+    return res.status(400).json({ error: "Missing song name or length" });
+  }
 
-        res.json({
-            message: "Album renamed successfully",
-            album: albums[newAlbumName]
-        });
-    }
+  const album = await Album.findOne({ where: { albumName: req.params.albumName } });
+  if (!album) {
+    return res.status(404).json({ error: "Album not found" });
+  }
+
+  await Song.create({
+    albumId: album.id,
+    trackTitle: songName,
+    trackDuration: length,
+  });
+
+  const updatedSongs = await Song.findAll({
+    where: { albumId: album.id },
+    attributes: ["trackTitle", "trackDuration"],
+  });
+
+  res.json({
+    message: "Song added successfully",
+    songs: updatedSongs,
+  });
 });
 
-router.put("/albums/:albumName/songs/:trackTitle", (req, res) => {
-    const albumName = req.params.albumName;
-    const currentTrackTitle = req.params.trackTitle;
-    const newTrackTitle = req.body.newTrackTitle;
-    const newTrackDuration = req.body.newTrackDuration;
+router.put("/albums/:albumName/songs/:trackTitle", async (req, res) => {
+  const { newTrackTitle, newTrackDuration } = req.body;
 
-    if (!albums[albumName]) {
-        res.status(404).json({ error: "Album not found" });
-    } else {
-        const songs = albums[albumName].songs;
-        let songFound = false;
+  const album = await Album.findOne({ where: { albumName: req.params.albumName } });
+  if (!album) {
+    return res.status(404).json({ error: "Album not found" });
+  }
 
-        for (let i = 0; i < songs.length; i++) {
-            if (songs[i].trackTitle === currentTrackTitle) {
-                if (newTrackTitle) {
-                    songs[i].trackTitle = newTrackTitle;
-                }
+  const song = await Song.findOne({
+    where: { albumId: album.id, trackTitle: req.params.trackTitle },
+  });
 
-                if (newTrackDuration) {
-                    songs[i].trackDuration = newTrackDuration;
-                }
+  if (!song) {
+    return res.status(404).json({ error: "Song not found" });
+  }
 
-                songFound = true;
-                break;
-            }
-        }
+  const updates = {};
+  if (newTrackTitle) updates.trackTitle = newTrackTitle;
+  if (newTrackDuration) updates.trackDuration = newTrackDuration;
 
-        if (!songFound) {
-            res.status(404).json({ error: "Song not found" });
-        } else {
-            res.json({
-                message: "Song updated successfully",
-                songs: albums[albumName].songs
-            });
-        }
-    }
+  await song.update(updates);
+
+  const updatedSongs = await Song.findAll({
+    where: { albumId: album.id },
+    attributes: ["trackTitle", "trackDuration"],
+  });
+
+  res.json({
+    message: "Song updated successfully",
+    songs: updatedSongs,
+  });
 });
 
 export default router;
