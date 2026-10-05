@@ -10,8 +10,49 @@
 <button id="getWordBtn">Get</button>
 <button id="patchWordBtn">Patch</button>
 <button id="deleteWordBtn">Delete</button>
-
+<br>
+<h1>Card Info</h1>
+<input id="name" placeholder="name"><input id="cost" placeholder="cost">
+<br>
+<input id="type" placeholder="type"><input id="subtype" placeholder="subtype">
+<br>
+<input id="rules" placeholder="rules"><input id="flavor" placeholder="flavor">
+<br>
+<input id="power" placeholder="P"><input id="toughness" placeholder="T">
+<br>
+<input id="id" placeholder="id"><input id="illustrator" placeholder="illustrator">
+<br>
+<button id="getCard">Get card by ID</button>
+<!--    "id": "3",
+        "name": "Ms. Bumbleflower",
+        "cost": "{1}{G}{W}{B}",
+        "type": "Legendary Creature",
+        "subtype": "Rabbit Citizen",
+        "Rules": "Vigilance\nWhenever you cast a spell, target opponent draws a card. Put a +1/+1 counter on target creature. It gains flying until end of turn. If this is the second time this ability has resolved this turn, you draw two cards.",
+        "Flavor": "",
+        "Power": 1,
+        "Toughness": 5,
+        "Illustrator": "Marta Nael"
+    -->
 <script>
+
+    document.getElementById('getCard').addEventListener('click', () => {
+        fetch(`/api/cameron/card/blc/${encodeURIComponent(document.getElementById("id").value)}`)
+            .then(res => res.json())
+            .then(json => {
+                document.getElementById('name').value = json.name;
+                document.getElementById('cost').value = json.cost;
+                document.getElementById('type').value = json.type;
+                document.getElementById('subtype').value = json.subtype;
+                document.getElementById('rules').value = json.rules;
+                document.getElementById('flavor').value = json.flavor;
+                document.getElementById('power').value = json.power;
+                document.getElementById('toughness').value = json.toughness;
+                document.getElementById('illustrator').value = json.illustrator;
+            })
+            .catch(err => console.error(err));
+    });
+
     document.getElementById('loadBtn').addEventListener('click', () => {
         fetch('/api/cameron/')
             .then(res => res.text())
