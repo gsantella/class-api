@@ -23,6 +23,7 @@
 <input id="id" placeholder="id"><input id="illustrator" placeholder="illustrator">
 <br>
 <button id="getCard">Get card by ID</button>
+<button id="setCard">Submit card by ID</button>
 <!--    "id": "3",
         "name": "Ms. Bumbleflower",
         "cost": "{1}{G}{W}{B}",
@@ -51,6 +52,25 @@
                 document.getElementById('illustrator').value = json.illustrator;
             })
             .catch(err => console.error(err));
+    });
+
+    document.getElementById('putCard').addEventListener('click', () => {
+        jsonPayload => {
+                jsonPayload.name = document.getElementById('name').value;
+                jsonPayload.cost = document.getElementById('cost').value;
+                jsonPayload.type = document.getElementById('type').value;
+                jsonPayload.subtype = document.getElementById('subtype').value;
+                jsonPayload.rules = document.getElementById('rules').value;
+                jsonPayload.flavor = document.getElementById('flavor').value;
+                jsonPayload.power = document.getElementById('power').value;
+                jsonPayload.toughness = document.getElementById('toughness').value;
+                jsonPayload.illustrator = document.getElementById('illustrator').value;
+            };
+        fetch(`/api/cameron/card/blc/${encodeURIComponent(document.getElementById("id").value)}`, {
+            method: "PATCH",
+            headers: { "Content-Type": "application/json" },
+            body: jsonPayload
+        });
     });
 
     document.getElementById('loadBtn').addEventListener('click', () => {

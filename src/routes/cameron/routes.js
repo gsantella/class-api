@@ -55,6 +55,10 @@ router.get("/card/blc/:id", (req, res) => {
     res.json(foundCard);
 });
 
+router.put("/card/blc/:id", (req,res) => {
+    
+});
+
 router.get("/card", (req, res) => {
     res.send("I should route to a card search")
 });
