@@ -1,45 +1,42 @@
 <h1>Destiny lives here! (no i dont)</h1>
 
-<button id="loadBtn">Click Me!</button>
-<div id="content">Click this button to get a random color!</div>
-<div id="color">Random Color</div>
 
-<script>
-  document.getElementById('loadBtn').addEventListener('click', () => {
-    fetch('/api/destiny/color')
-      .then(res => res.text())
-      .then(text => {
-        document.getElementById('color').textContent = text;
-      })
-      .catch(err => console.error(err));
-  });
-</script>
 <!doctype html>
 <html lang="en">
 
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Destiny</title>
+  <title>Showbiz Pizza Place</title>
 </head>
 
 <body>
   <main>
-    <h1>Destiny</h1>
+    <button id="loadBtn">Click Me!</button>
+    <div id="content">Click this button to get a random color!</div>
+    <div id="color">Random Color</div>
 
+    <h1>Magic Words</h1>
     <label for="magicWords">Words</label>
     <input id="magicWords" name="magicWords" type="text">
-
     <div>
       <button id="saveButton" type="button">Save</button>
       <button id="retrieveButton" type="button">Get</button>
       <button id="deleteButton" type="button">Clear</button>
     </div>
-
     <p id="status" role="status" aria-live="polite">Nothing saved yet.</p>
   </main>
 
   <script>
+    document.getElementById('loadBtn').addEventListener('click', () => {
+      fetch('/api/destiny/color')
+        .then(res => res.text())
+        .then(text => {
+          document.getElementById('color').textContent = text;
+        })
+        .catch(err => console.error(err));
+    });
+
     const input = document.getElementById('magicWords');
     const status = document.getElementById('status');
 
