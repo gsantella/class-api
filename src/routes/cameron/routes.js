@@ -56,7 +56,13 @@ router.get("/card/blc/:id", (req, res) => {
 });
 
 router.put("/card/blc/:id", (req,res) => {
-    
+    const { id } = req.params;
+    const foundCard = blc.find((p) => p.id === id);
+    if (!foundCard) {
+        return res.status(404).send("Card not found");
+    }
+    foundcard.value = req.body.value;
+    console.log(req.body.value);
 });
 
 router.get("/card", (req, res) => {

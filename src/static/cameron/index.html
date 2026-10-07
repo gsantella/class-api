@@ -54,7 +54,7 @@
             .catch(err => console.error(err));
     });
 
-    document.getElementById('putCard').addEventListener('click', () => {
+    document.getElementById('setCard').addEventListener('click', () => {
         jsonPayload => {
                 jsonPayload.name = document.getElementById('name').value;
                 jsonPayload.cost = document.getElementById('cost').value;
@@ -67,7 +67,7 @@
                 jsonPayload.illustrator = document.getElementById('illustrator').value;
             };
         fetch(`/api/cameron/card/blc/${encodeURIComponent(document.getElementById("id").value)}`, {
-            method: "PATCH",
+            method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: jsonPayload
         });
