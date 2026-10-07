@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import {Pokemon,Team,TeamPokemon
-} from '../../playground/deandre/orm.js';
+import { Pokemon, Team, TeamPokemon } from '../../playground/deandre/orm.js';
 
 const router = Router();
+let color = "";
 
 router.get("/", (req, res) => {
     res.send("Pokemon");
@@ -35,7 +35,7 @@ router.get("/pokemon/:id", async (req, res) => {
         console.error(error);
         res.status(500).send("Database error");
 
-        
+
     }
 });
 
@@ -125,7 +125,7 @@ router.put("/pokemon/team/:UserId/:id", async (req, res) => {
 
         if (!team) { // Checks if the user has a team before adding a Pokemon
             return res.status(404).send(
-                `User ID "${UserId}" does not have a team.` 
+                `User ID "${UserId}" does not have a team.`
             );
         }
 
@@ -282,5 +282,22 @@ router.put( // Adds a new user
         }
     }
 );
+
+//==============================
+// Second Piece
+//==============================
+router.get("/Grabcolor", (req, res) => {
+    res.send(`Current color is: ${color}`);
+});
+
+router.patch("/Entercolor", (req, res) => {
+    color = req.body.color;
+    res.send(`Color changed to: ${color}`);
+});
+
+router.delete("/Deletecolor", (req, res) => {
+    color = "";
+    res.send("Color has been reset.");
+});
 
 export default router;

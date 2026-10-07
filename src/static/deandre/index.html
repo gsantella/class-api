@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -68,11 +69,7 @@
         <section class="search-section">
             <h2>Pokémon Search</h2>
 
-            <input
-                type="text"
-                id="pokeInput"
-                placeholder="Enter Pokemon ID or name (1-493)"
-            >
+            <input type="text" id="pokeInput" placeholder="Enter Pokemon ID or name (1-493)">
 
             <button id="PokeSearch">
                 Search
@@ -109,11 +106,7 @@
 
             <br>
 
-            <input
-                type="text"
-                id="userIdInput"
-                placeholder="Enter User ID"
-            >
+            <input type="text" id="userIdInput" placeholder="Enter User ID">
 
             <button id="btnChangeId">
                 Change User ID
@@ -129,34 +122,27 @@
         <section class="color-section">
             <h2>Color Display</h2>
             <p>
-                 <input
-                type="text"
-                id="favColor"
-                placeholder="Enter your favorite color"
-                >
-                <button id="btnColor">
-                Display a Color
-            </button>
+                <input type="text" id="favColor" placeholder="Enter your favorite color">
+                <button id="btnGetColor">Get Color</button>
+                <button id="btnUpdateColor">Update Color</button>
+                <button id="btnDeleteColor">Delete Color</button>
             </p>
+            
+            <section>
+                <div id="box"></div>
+            </section>
 
-        <section>
-            <div id="box"></div>
-        </section>
-
-        <footer>
-            <p>
-                Pokémon and related intellectual property are owned by
-                their respective copyright and trademark holders.
-                This project is an independent educational project.
-            </p>
-        </footer>
+            <footer>
+                <p>
+                    Pokémon and related intellectual property are owned by
+                    their respective copyright and trademark holders.
+                    This project is an independent educational project.
+                </p>
+            </footer>
     </main>
 
     <script>
-         const btnColor = document.getElementById('btnColor'); // Gets a random color and displays it in the box
-         const txtFav = document.getElementById('favColor'); // User can enter their favorite color and display it in the box
-
-
+        //Pokemon buttons (Pokemon , Team, TeamPokemon)
         const btnRandom = document.getElementById('btnRandomPoke'); // Grabs a random Pokemon (1 - 493)
         const btnCreate = document.getElementById('btnCreateTeam'); // Creates a new team for the current user
         const btnGet = document.getElementById('btnGetTeam'); // Gets the current user's team
@@ -165,11 +151,20 @@
         const btnChangeId = document.getElementById('btnChangeId'); // Changes the current user's ID to the value in the userIdInput field
         const btnSwitchUser = document.getElementById('btnSwitchUser'); // Switches to a different user ID and displays their team
 
+        //Text input fields
         const box = document.getElementById('box');
         const pokeInput = document.getElementById('pokeInput');
         const userIdInput = document.getElementById('userIdInput');
         const btnSearch = document.getElementById('PokeSearch');
         const currentUserId = document.getElementById('currentUserId');
+
+        //Color Stuff
+        const txtFav = document.getElementById('favColor'); // User can enter their favorite color and display it in the box
+        const btnGetColor = document.getElementById('btnGetColor'); // Updates the color in the box to the value in the txtFav field
+        const btnDeleteColor = document.getElementById('btnDeleteColor'); // Deletes the color 
+        const btnUpdateColor = document.getElementById('btnUpdateColor'); // Updates the color 
+
+
 
         let currentPokemon = null;
         let userId = "deandre";
@@ -179,36 +174,71 @@
             currentUserId.textContent = userId;
         }
 
-        // Piece 1 added a button that displays a random color
-        // Piece 2 added a text feild that allows the user to enter their favorite color and display it in the box
-        btnColor.addEventListener('click', () => {
-            const colors = [
-                "red",
-                "blue",
-                "green",
-                "yellow",
-                "purple"
-            ];
 
-            const userColor = txtFav.value.trim();
-            if(userColor == ""){
-                const randomColor =
-                colors[Math.floor(Math.random() * colors.length)];
-
-            box.innerHTML = `
-                <p style="color: ${randomColor};">
-                    This is a random color: ${randomColor}
-                </p>
-            `;
-            }
-            else{
-                box.innerHTML = `
-                <p style="color: ${userColor};">
-                    This is your favorite color: ${userColor}
-                </p>
-            `;
-            }
+        //==============================
+        // Color Section 
+        //==============================
+        btnGetColor.addEventListener("click", () => {
+            fetch("/api/deandre/Grabcolor")
+                .then(res => res.text())
+                .then(data => {
+                    box.innerHTML = `<p>${data}</p>`;
+                })
+                .catch(error => {
+                    box.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                });
         });
+
+        // PATCH COLOR
+        btnUpdateColor.addEventListener("click", () => {
+            const newColor = txtFav.value.trim();
+
+            if (!newColor) {
+                box.innerHTML = `
+            <p style="color: orange;">
+                Please enter a color first.
+            </p>
+        `;
+                return;
+            }
+            fetch("/api/deandre/Entercolor", {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    color: newColor
+                })
+            })
+                .then(res => res.text())
+                .then(data => {
+                    box.innerHTML = `<p>${data}</p>`;
+                })
+                .catch(error => {
+                    box.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                });
+        });
+
+
+        // DELETE COLOR
+        btnDeleteColor.addEventListener("click", () => {
+            fetch("/api/deandre/Deletecolor", {
+                method: "DELETE"
+            })
+                .then(res => res.text())
+                .then(data => {
+                    box.innerHTML = `<p>${data}</p>`;
+                    txtFav.value = "";
+                })
+                .catch(error => {
+                    box.innerHTML = `<p style="color: red;">${error.message}</p>`;
+                });
+        });
+
+
+        //==============================
+        // Pokemon Section
+        //==============================
 
 
         btnSearch.addEventListener('click', () => {
@@ -578,4 +608,5 @@
     </script>
 
 </body>
+
 </html>
