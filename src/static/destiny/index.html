@@ -16,9 +16,9 @@
     <div id="content">Click this button to get a random color!</div>
     <div id="color">Random Color</div>
 
-    <h1>Magic Words</h1>
-    <label for="magicWords">Words</label>
-    <input id="magicWords" name="magicWords" type="text">
+    <h1>Tell me your favorite Rock-a-Fire Explosion song!</h1>
+    <label for="favoriteSong">Song</label>
+    <input id="favoriteSong" name="favoriteSong" type="text">
     <div>
       <button id="saveButton" type="button">Save</button>
       <button id="retrieveButton" type="button">Get</button>
@@ -37,7 +37,7 @@
         .catch(err => console.error(err));
     });
 
-    const input = document.getElementById('magicWords');
+    const input = document.getElementById('favoriteSong');
     const status = document.getElementById('status');
 
     async function requestValue(url, options = {}) {
@@ -55,9 +55,9 @@
       try {
         const data = await request();
 
-        if (data.magicWords !== undefined) {
-          input.value = data.magicWords ?? '';
-          status.textContent = data.magicWords ? `Current: ${data.magicWords}` : 'Empty.';
+        if (data.favoriteSong !== undefined) {
+          input.value = data.favoriteSong ?? '';
+          status.textContent = data.favoriteSong ? `Current: ${data.favoriteSong}` : 'Empty.';
         }
       } catch (error) {
         status.textContent = error.message;
@@ -65,19 +65,19 @@
     }
 
     document.getElementById('saveButton').addEventListener('click', () => {
-      handleRequest(() => requestValue('/api/destiny/magicwords', {
+      handleRequest(() => requestValue('/api/destiny/favoriteSong', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ magicWords: input.value })
+        body: JSON.stringify({ favoriteSong: input.value })
       }));
     });
 
     document.getElementById('retrieveButton').addEventListener('click', () => {
-      handleRequest(() => requestValue('/api/destiny/magicwords'));
+      handleRequest(() => requestValue('/api/destiny/favoriteSong'));
     });
 
     document.getElementById('deleteButton').addEventListener('click', () => {
-      handleRequest(() => requestValue('/api/destiny/magicwords', { method: 'DELETE' }));
+      handleRequest(() => requestValue('/api/destiny/favoriteSong', { method: 'DELETE' }));
     });
   </script>
 </body>
