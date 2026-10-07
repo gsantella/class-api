@@ -22,6 +22,7 @@ const songs = [
 const colors = [
   "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet"
 ];
+let magicWords = '';
 
 router.get('/', (req, res) => {
   res.send('Welcome to Showbiz Pizza!');
@@ -45,16 +46,22 @@ router.get('/refresh', (req, res) => {
   res.send("Hot reload check! Zoo weeee mama!")
 });
 
-router.post('/post', (req, res) => {
-  res.send('This will be a POST');
+router.get('/magicwords', (req, res) => {
+  res.json({ magicWords });
 });
 
-router.put('/put', (req, res) => {
-  res.send('This will be a PUT.');
+router.patch('/magicwords', (req, res) => {
+  if (typeof req.body?.magicWords !== 'string') {
+    return res.status(400).json({ error: 'magicWords must be a string.' });
+  }
+
+  magicWords = req.body.magicWords;
+  res.json({ magicWords });
 });
 
-router.delete('/delete', (req, res) => {
-  res.send('This will be a DELETE.');
+router.delete('/magicwords', (req, res) => {
+  magicWords = '';
+  res.json({ magicWords });
 });
 
 export default router;
