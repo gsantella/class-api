@@ -22,7 +22,7 @@ const songs = [
 const colors = [
   "Red", "Orange", "Yellow", "Green", "Blue", "Indigo", "Violet"
 ];
-let magicWords = '';
+let favoriteSong = 'Heartaches';
 
 router.get('/', (req, res) => {
   res.send('Welcome to Showbiz Pizza!');
@@ -46,22 +46,22 @@ router.get('/refresh', (req, res) => {
   res.send("Hot reload check! Zoo weeee mama!")
 });
 
-router.get('/magicwords', (req, res) => {
-  res.json({ magicWords });
+router.get('/favoriteSong', (req, res) => {
+  res.json({ favoriteSong });
 });
 
-router.patch('/magicwords', (req, res) => {
-  if (typeof req.body?.magicWords !== 'string') {
-    return res.status(400).json({ error: 'magicWords must be a string.' });
+router.patch('/favoriteSring', (req, res) => {
+  if (typeof req.body?.favoriteSong !== 'string') {
+    return res.status(400).json({ error: 'Sorry! Your favorite song must be a string.' });
   }
 
-  magicWords = req.body.magicWords;
-  res.json({ magicWords });
+  favoriteSong = req.body.favoriteSong;
+  res.json({ favoriteSong });
 });
 
-router.delete('/magicwords', (req, res) => {
-  magicWords = '';
-  res.json({ magicWords });
+router.delete('/favoriteSong', (req, res) => {
+  favoriteSong = '';
+  res.json({ favoriteSong });
 });
 
 export default router;
